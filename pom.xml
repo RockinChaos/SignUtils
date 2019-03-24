@@ -164,7 +164,7 @@
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/src/me/RockinChaos/itemjoin/extra/VaultAPI.jar</systemPath>
+            <systemPath>${pom.basedir}/src/me/RockinChaos/signutils/extra/VaultAPI.jar</systemPath>
             <version>LATEST</version>
         </dependency>
     <!--BetterNick Local API/Repo -->
@@ -172,7 +172,7 @@
             <groupId>me.BetterNickAPI</groupId>
             <artifactId>BetterNickAPI</artifactId>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/src/me/RockinChaos/itemjoin/extra/BetterNickAPI.jar</systemPath>
+            <systemPath>${pom.basedir}/src/me/RockinChaos/signutils/extra/BetterNickAPI.jar</systemPath>
             <version>LATEST</version>
         </dependency>
 	</dependencies>
