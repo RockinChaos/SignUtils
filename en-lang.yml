@@ -1,0 +1,28 @@
+# --{ =-=-=-=-=-=-=-=-=-= SignUtils English Language file, by RockinChaos =-=-=-=-=-=-=-=-=-= }--
+# If you don't want a message to be sent, fully remove it from below or make it blank.
+en-Version: 0
+
+# This is the prefix that will be sent at the beginning of every single message sent in the language file.
+Prefix: '&7[&5SignUtils&7]'
+
+# These messages are specific to the plugin commands.
+Commands:
+  Default:
+    unknownCommand: '&cUnknown command!'
+    configReload: '&aConfiguration(s) Reloaded!'
+    noPermission: '&cYou do not have permission to use that command!'
+    notPlayer: '&cYou must be a player to execute that command!'
+    targetNotFound: '&cThe player &c%targetplayer% &ccould not be found!'
+  Updates:
+    checking: '&4%player% has requested to check for updates!'
+    forcing: '&4%player% has requested to force update the plugin!'
+    
+Signs:
+  Default:
+    signCreated: '&aSign successfully created!'
+    noPermission: '&cYou do not have permission to create a utility sign!'
+  Rank:
+    signLine: '[Rank]'
+    playerLine: '&7&m&l=======&r &4&l%player% &7&m&l======='
+    groupSizeLine: '&7You are involved in &a&l%group_size% &7group(s).'
+    groupListLine: '&e   - %group_list%'

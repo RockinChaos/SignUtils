@@ -1,0 +1,83 @@
+name: SignUtils
+main: me.rockinchaos.signutils.SignUtils
+api-version: 1.13
+version: 0.0.1-SNAPSHOT
+description: Set custom elements to signs.
+website: PastePlugiNURLHere
+softdepend:: [BetterNick, PlaceholderAPI, Vault]
+
+commands:
+   signutils:
+      description: Displays a menu giving credit to the creator and the help menu command.
+      permission: signutils.use
+      usage: |
+          /signutils
+   signutils help:
+      description: Displays the plugin help menu.
+      permission: signutils.use
+      usage: |
+          /signutils help
+   signutils reload:
+      description: Reloads the plugin configuration files.
+      permission: signutils.reload
+      usage: |
+          /signutils reload
+   signutils rank:
+      description: Sends the executor their rank information.
+      permission: signutils.rank
+      usage: |
+          /signutils rank
+   signutils rank <player>:
+      description: Sends the player their rank information.
+      permission: signutils.rank.others
+      usage: |
+          /signutils rank <player>
+   signutils updates:
+      description: Checks to see if there is an update available for the plugin.
+      permission: signutils.updates
+      usage: |
+          /signutils updates
+   signutils autoupdate:
+      description: Checks if an update exists for the plugin, then installs the latest version for you.
+      permission: signutils.autoupdate
+      usage: |
+          /signutils autoupdate
+
+permissions:
+   signutils.*:
+      description: Allows use of all commands.
+      default: false
+      children:
+          signutils.all: true
+   signutils.all:
+      description: Allows use of all commands.
+      default: false
+      children:
+          signutils.use: true
+          signutils.reload: true
+          signutils.updates: true
+          signutils.autoupdate: true
+          signutils.rank: true
+          signutils.rank.others: true
+          signutils.create: true
+   signutils.use:
+      description: Allows the use of basic plugin commands.
+      default: true
+   signutils.reload:
+      description: Allows the use of the reload command.
+      default: false
+   signutils.rank:
+      description: Allows the user to use the rank command.
+      default: false
+   signutils.rank.others:
+      description: Allows the user to use the rank <player> command.
+      default: false
+   signutils.updates:
+      description: Allows the use of the updates command.
+      default: false
+   signutils.autoupdate:
+      description: Allows the use of the autoupdate command.
+      default: false
+   signutils.create:
+      description: Allows the user to create custom signutils signs.
+      default: false

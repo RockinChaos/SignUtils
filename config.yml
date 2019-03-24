@@ -1,0 +1,24 @@
+# --{ =-=-=-=-=-=-=-=-=-= SignUtils Configuration Settings, by RockinChaos =-=-=-=-=-=-=-=-=-= }--
+# See the tutorial page for a more in-depth explaination; https://www.spigotmc.org/wiki/signutils/
+config-Version: 0
+
+# English is currently the only support language at the moment!
+Language: 'English'
+
+
+# These are typically general maintenance settings that do not affect functionality.
+General:
+  CheckforUpdates: true
+  Metrics-Logging: true
+  Log-Coloration: true
+  Debugging: false
+  
+# These permissions if enabled, determine whether the permission(s) is/are applied to certain players.
+Permissions:
+  Commands-OP: false
+  
+# These are optional dependencies, only enable these if you want to use them.
+softDepend:
+  BetterNick: false
+  PlaceholderAPI: false
+  Vault: true
