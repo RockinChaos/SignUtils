@@ -1,4 +1,4 @@
-package me.rockinchaos.signutils.utils;
+package me.RockinChaos.signutils.utils;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;

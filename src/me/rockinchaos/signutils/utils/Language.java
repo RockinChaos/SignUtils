@@ -1,11 +1,11 @@
-package me.rockinchaos.signutils.utils;
+package me.RockinChaos.signutils.utils;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import me.rockinchaos.signutils.handlers.ConfigHandler;
-import me.rockinchaos.signutils.handlers.ServerHandler;
+import me.RockinChaos.signutils.handlers.ConfigHandler;
+import me.RockinChaos.signutils.handlers.ServerHandler;
 
 public class Language {
 	private static Lang langType = Lang.ENGLISH;
@@ -70,7 +70,8 @@ public class Language {
 				.replace("%lore%", langHolder[1])
 				.replace("%group_size%", langHolder[2])
 				.replace("%group_list%", langHolder[3])
-				.replace("%targetplayer%", langHolder[4]);
+				.replace("%targetplayer%", langHolder[4])
+				.replace("%dependency%", langHolder[5]);
 	}
 	
 	private static boolean showPrefix(String nodeLocation) {

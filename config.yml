@@ -21,4 +21,4 @@ Permissions:
 softDepend:
   BetterNick: false
   PlaceholderAPI: false
-  Vault: true
+  Vault: false

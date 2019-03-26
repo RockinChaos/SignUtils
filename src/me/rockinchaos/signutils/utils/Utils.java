@@ -1,4 +1,4 @@
-package me.rockinchaos.signutils.utils;
+package me.RockinChaos.signutils.utils;
 
 import java.util.Random;
 
@@ -9,10 +9,10 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import de.domedd.betternick.api.nickedplayer.NickedPlayer;
+import me.RockinChaos.signutils.handlers.ConfigHandler;
+import me.RockinChaos.signutils.handlers.MemoryHandler;
+import me.RockinChaos.signutils.handlers.ServerHandler;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.rockinchaos.signutils.handlers.ConfigHandler;
-import me.rockinchaos.signutils.handlers.MemoryHandler;
-import me.rockinchaos.signutils.handlers.ServerHandler;
 
 public class Utils {
 

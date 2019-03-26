@@ -1,10 +1,10 @@
-package me.rockinchaos.signutils.handlers;
+package me.RockinChaos.signutils.handlers;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.rockinchaos.signutils.SignUtils;
+import me.RockinChaos.signutils.SignUtils;
 
 public class ServerHandler {
 

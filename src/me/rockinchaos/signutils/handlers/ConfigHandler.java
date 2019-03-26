@@ -1,12 +1,12 @@
-package me.rockinchaos.signutils.handlers;
+package me.RockinChaos.signutils.handlers;
 
 import java.io.File;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import me.rockinchaos.signutils.SignUtils;
-import me.rockinchaos.signutils.utils.Utils;
+import me.RockinChaos.signutils.SignUtils;
+import me.RockinChaos.signutils.utils.Utils;
 
 public class ConfigHandler {
 	private static YamlConfiguration loadConfig;

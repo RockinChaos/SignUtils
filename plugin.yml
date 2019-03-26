@@ -1,5 +1,5 @@
 name: SignUtils
-main: me.rockinchaos.signutils.SignUtils
+main: me.RockinChaos.signutils.SignUtils
 api-version: 1.13
 version: 0.0.1-SNAPSHOT
 description: Set custom elements to signs.
@@ -28,7 +28,7 @@ commands:
       usage: |
           /signutils rank
    signutils rank <player>:
-      description: Sends the player their rank information.
+      description: Sends the executor the specified players rank information.
       permission: signutils.rank.others
       usage: |
           /signutils rank <player>

@@ -1,4 +1,4 @@
-package me.rockinchaos.signutils.utils;
+package me.RockinChaos.signutils.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -8,7 +8,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.json.simple.JSONObject;
 
-import me.rockinchaos.signutils.SignUtils;
+import me.RockinChaos.signutils.SignUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;

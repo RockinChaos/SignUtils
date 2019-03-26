@@ -1,10 +1,10 @@
-package me.rockinchaos.signutils.handlers;
+package me.RockinChaos.signutils.handlers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.rockinchaos.signutils.SignUtils;
+import me.RockinChaos.signutils.SignUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -22,6 +22,7 @@ public class UpdateHandler {
     private File jarLink;
     private final String AUTOQUERY = "projects/signutils/files/latest";
     private final String AUTOHOST = "https://dev.bukkit.org/";
+    private final String SPIGOTURL = "INSERTURLEHREEHEHREHRHERHERHER";
     private final String HOST = "https://www.spigotmc.org/api/general.php";
     private final int PROJECTID = -1;
     private final String KEY = ("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + PROJECTID);
@@ -75,7 +76,7 @@ public class UpdateHandler {
     			ServerHandler.sendMessage(sender, "&aSuccessfully updated to v" + this.latestVersionRaw + "!");
     			ServerHandler.sendMessage(sender, "&aYou must restart your server for this to take affect.");
     		} catch (Exception e) {
-    			ServerHandler.sendMessage(sender, "&cAn error has occurred while trying to update the plugin ItemJoin.");
+    			ServerHandler.sendMessage(sender, "&cAn error has occurred while trying to update the plugin SignUtils.");
     			ServerHandler.sendMessage(sender, "&cPlease try again later, if you continue to see this please contact the plugin developer.");
     			ServerHandler.sendDebugTrace(e);
     		}
@@ -97,8 +98,8 @@ public class UpdateHandler {
     			ServerHandler.sendMessage(sender, "&cYour current version: &bv" + this.localeVersionRaw);
     		}
     		ServerHandler.sendMessage(sender, "&cA new version is available: " + "&av" + this.latestVersionRaw);
-    		ServerHandler.sendMessage(sender, "&aGet it from: https://www.spigotmc.org/resources/itemjoin.12661/history");
-    		ServerHandler.sendMessage(sender, "&aIf you wish to auto update, please type /ItemJoin AutoUpdate");
+    		ServerHandler.sendMessage(sender, "&aGet it from: " + SPIGOTURL + "/history");
+    		ServerHandler.sendMessage(sender, "&aIf you wish to auto update, please type /SignUtils AutoUpdate");
     		this.sendNotifications();
     	} else {
     		if (this.betaVersion) {

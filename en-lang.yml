@@ -21,6 +21,7 @@ Signs:
   Default:
     signCreated: '&aSign successfully created!'
     noPermission: '&cYou do not have permission to create a utility sign!'
+    missingDependency: '&c&lWARNING! &cYou must have &b&l%dependency% &cinstalled and enabled in the config.yml to use this sign element!'
   Rank:
     signLine: '[Rank]'
     playerLine: '&7&m&l=======&r &4&l%player% &7&m&l======='

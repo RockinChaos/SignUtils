@@ -1,13 +1,13 @@
-package me.rockinchaos.signutils.handlers;
+package me.RockinChaos.signutils.handlers;
 
 import org.bukkit.Bukkit;
 
-import me.rockinchaos.signutils.Commands;
-import me.rockinchaos.signutils.SignUtils;
-import me.rockinchaos.signutils.listeners.SignInteract;
-import me.rockinchaos.signutils.utils.Language;
-import me.rockinchaos.signutils.utils.Metrics;
-import me.rockinchaos.signutils.utils.VaultAPI;
+import me.RockinChaos.signutils.Commands;
+import me.RockinChaos.signutils.SignUtils;
+import me.RockinChaos.signutils.listeners.SignInteract;
+import me.RockinChaos.signutils.utils.Language;
+import me.RockinChaos.signutils.utils.Metrics;
+import me.RockinChaos.signutils.utils.VaultAPI;
 
 
 public class MemoryHandler {
@@ -108,11 +108,11 @@ public class MemoryHandler {
 	}
 	
 	public static void newVault() {
-		if (Bukkit.getServer().getPluginManager().getPlugin("Vault") != null) {
+		if (Bukkit.getServer().getPluginManager().getPlugin("Vault") != null && ConfigHandler.getConfig("config.yml").getBoolean("softDepend.Vault") == true) {
 			ServerHandler.sendConsoleMessage("&aHooked into Vault!");
 			VaultAPI.enableEconomy();
 			VaultAPI.setVaultStatus(true);
-		} else {
+		} else if (ConfigHandler.getConfig("config.yml").getBoolean("softDepend.Vault") == true) {
 			ServerHandler.sendConsoleMessage("&4Could not find Vault or no economy plugin is attached.");
 			VaultAPI.setVaultStatus(false);
 		}

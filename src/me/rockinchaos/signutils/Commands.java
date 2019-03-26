@@ -1,14 +1,14 @@
-package me.rockinchaos.signutils;
+package me.RockinChaos.signutils;
 
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
-import me.rockinchaos.signutils.handlers.ConfigHandler;
-import me.rockinchaos.signutils.handlers.MemoryHandler;
-import me.rockinchaos.signutils.handlers.PermissionsHandler;
-import me.rockinchaos.signutils.handlers.PlayerHandler;
-import me.rockinchaos.signutils.utils.Language;
-import me.rockinchaos.signutils.utils.VaultAPI;
+import me.RockinChaos.signutils.handlers.ConfigHandler;
+import me.RockinChaos.signutils.handlers.MemoryHandler;
+import me.RockinChaos.signutils.handlers.PermissionsHandler;
+import me.RockinChaos.signutils.handlers.PlayerHandler;
+import me.RockinChaos.signutils.utils.Language;
+import me.RockinChaos.signutils.utils.VaultAPI;
 
 public class Commands implements CommandExecutor {
 	
@@ -53,7 +53,7 @@ public class Commands implements CommandExecutor {
 			} else { Language.sendLangMessage("Commands.Default.noPermission", sender); }
 			return true;
 		} else if (args[0].equalsIgnoreCase("rank") || args[0].equalsIgnoreCase("ranks")) {
-			if (PermissionsHandler.isAuthorized(sender, "signutils.rank")) {
+			if (PermissionsHandler.isAuthorized(sender, "signutils.rank") && VaultAPI.vaultError(sender, true)) {
 				if (args.length == 2 && PermissionsHandler.isAuthorized(sender, "signutils.rank.others")) {
 					Player argsPlayer = PlayerHandler.getPlayerString(args[1]);
 					if (argsPlayer == null) { String[] placeHolders = Language.newString(); placeHolders[4] = args[1]; Language.sendLangMessage("Commands.Default.targetNotFound", sender); return true; }
@@ -73,7 +73,7 @@ public class Commands implements CommandExecutor {
 						Language.sendLangMessage("Signs.Rank.groupListLine", sender, placeHolders);
 					}
 				} else { Language.sendLangMessage("Commands.Default.notPlayer", sender); }
-			} else { Language.sendLangMessage("Commands.Default.noPermission", sender); }
+			} else if (VaultAPI.vaultError(sender, false)) { Language.sendLangMessage("Commands.Default.noPermission", sender); }
 			return true;
 		} else if (args[0].equalsIgnoreCase("updates") || args[0].equalsIgnoreCase("update")) {
 			if (PermissionsHandler.isAuthorized(sender, "signutils.updates")) {

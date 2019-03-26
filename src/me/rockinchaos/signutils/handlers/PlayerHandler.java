@@ -1,4 +1,4 @@
-package me.rockinchaos.signutils.handlers;
+package me.RockinChaos.signutils.handlers;
 
 import java.util.UUID;
 
@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import de.domedd.betternick.api.nickedplayer.NickedPlayer;
-import me.rockinchaos.signutils.utils.Legacy;
+import me.RockinChaos.signutils.utils.Legacy;
 
 public class PlayerHandler {
 
