@@ -12,7 +12,7 @@ Commands:
     configReload: '&aConfiguration(s) Reloaded!'
     noPermission: '&cYou do not have permission to use that command!'
     notPlayer: '&cYou must be a player to execute that command!'
-    targetNotFound: '&cThe player &c%targetplayer% &ccould not be found!'
+    targetNotFound: '&cThe player &b&l%targetplayer% &ccould not be found!'
   Updates:
     checking: '&4%player% has requested to check for updates!'
     forcing: '&4%player% has requested to force update the plugin!'

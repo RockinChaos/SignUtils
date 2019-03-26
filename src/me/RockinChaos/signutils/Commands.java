@@ -56,7 +56,7 @@ public class Commands implements CommandExecutor {
 			if (PermissionsHandler.isAuthorized(sender, "signutils.rank") && VaultAPI.vaultError(sender, true)) {
 				if (args.length == 2 && PermissionsHandler.isAuthorized(sender, "signutils.rank.others")) {
 					Player argsPlayer = PlayerHandler.getPlayerString(args[1]);
-					if (argsPlayer == null) { String[] placeHolders = Language.newString(); placeHolders[4] = args[1]; Language.sendLangMessage("Commands.Default.targetNotFound", sender); return true; }
+					if (argsPlayer == null) { String[] placeHolders = Language.newString(); placeHolders[4] = args[1]; Language.sendLangMessage("Commands.Default.targetNotFound", sender, placeHolders); return true; }
 					String[] placeHolders = Language.newString(); placeHolders[2] = Integer.toString(VaultAPI.getGroups().getPlayerGroups(argsPlayer).length);
 					Language.sendLangMessage("Signs.Rank.playerLine", sender, placeHolders);
 					Language.sendLangMessage("Signs.Rank.groupSizeLine", sender, placeHolders);

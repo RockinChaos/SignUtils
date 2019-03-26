@@ -1,8 +1,6 @@
 package me.RockinChaos.signutils.listeners;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,13 +42,13 @@ public class SignInteract implements Listener {
 			if (PermissionsHandler.isAuthorized(player, "signutils.create") && VaultAPI.vaultError(player, true)) {
 				if (this.setDefault(event.getLines())) { for (int i = 0; i < 4; i++) { event.setLine(i, defaultSignLines(player, event.getLines(), i)); } }
 				else { for (int i = 0; i < 4; i++) { event.setLine(i, Utils.translateLayout(event.getLine(i), player)); } } 
-				EffectsAPI.playEffect(event.getBlock(), Particle.VILLAGER_HAPPY, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+				EffectsAPI.playEffect(event.getBlock(), "VILLAGER_HAPPY", "ENTITY_EXPERIENCE_ORB_PICKUP");
 				Language.sendLangMessage("Signs.Default.signCreated", player);
 			} else if (!VaultAPI.vaultError(player, false)) {
-				EffectsAPI.playEffect(event.getBlock(), Particle.VILLAGER_ANGRY, Sound.ENTITY_VILLAGER_HURT);
+				EffectsAPI.playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
 				event.setCancelled(true);
 			} else {
-				EffectsAPI.playEffect(event.getBlock(), Particle.VILLAGER_ANGRY, Sound.ENTITY_VILLAGER_HURT);
+				EffectsAPI.playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
 				Language.sendLangMessage("Signs.Default.noPermission", player);
 				event.setCancelled(true);
 			}
