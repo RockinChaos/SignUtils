@@ -22,8 +22,7 @@ public class SignInteract implements Listener {
 		Player player = event.getPlayer();
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Utils.containsIgnoreCase(event.getClickedBlock().getType().name(), "SIGN")) {
 			Sign sign = (Sign) event.getClickedBlock().getState();
-			String signType = ChatColor.stripColor(sign.getLine(0));
-			if (signType.equalsIgnoreCase(Language.returnLangMessage("Signs.Rank.signLine", player, false)) && VaultAPI.vaultError(player, false)) {
+			if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Language.returnLangMessage("Signs.Rank.signLine", player, false))) && VaultAPI.vaultError(player, false)) {
 				String[] placeHolders = Language.newString(); placeHolders[2] = Integer.toString(VaultAPI.getGroups().getPlayerGroups(player).length);
 				Language.sendLangMessage("Signs.Rank.playerLine", player, placeHolders);
 				Language.sendLangMessage("Signs.Rank.groupSizeLine", player, placeHolders);
@@ -38,7 +37,7 @@ public class SignInteract implements Listener {
 	@EventHandler
 	private void onSignPlace(SignChangeEvent event) {
 		Player player = event.getPlayer();
-		if (event.getLine(0).replaceAll("(&([a-f0-9]))", "").equalsIgnoreCase(Language.returnLangMessage("Signs.Rank.signLine", player, false))) {
+		if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Language.returnLangMessage("Signs.Rank.signLine", player, false)))) {
 			if (PermissionsHandler.isAuthorized(player, "signutils.create") && VaultAPI.vaultError(player, true)) {
 				if (this.setDefault(event.getLines())) { for (int i = 0; i < 4; i++) { event.setLine(i, defaultSignLines(player, event.getLines(), i)); } }
 				else { for (int i = 0; i < 4; i++) { event.setLine(i, Utils.translateLayout(event.getLine(i), player)); } } 
