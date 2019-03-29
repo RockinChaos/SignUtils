@@ -2,8 +2,8 @@ name: SignUtils
 main: me.RockinChaos.signutils.SignUtils
 api-version: 1.13
 version: 1.0.0
-description: Set custom elements to signs.
-website: PastePlugiNURLHere
+description: Create custom utility signs.
+website: https://www.spigotmc.org/resources/signutils.66019/
 softdepend:: [BetterNick, PlaceholderAPI, Vault]
 
 commands:

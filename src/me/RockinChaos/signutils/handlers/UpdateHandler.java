@@ -22,9 +22,9 @@ public class UpdateHandler {
     private File jarLink;
     private final String AUTOQUERY = "projects/signutils/files/latest";
     private final String AUTOHOST = "https://dev.bukkit.org/";
-    private final String SPIGOTURL = "INSERTURLEHREEHEHREHRHERHERHER";
+    private final String SPIGOTURL = "https://www.spigotmc.org/resources/signutils.66019/";
     private final String HOST = "https://www.spigotmc.org/api/general.php";
-    private final int PROJECTID = -1;
+    private final int PROJECTID = 66019;
     private final String KEY = ("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + PROJECTID);
     private String versionExact = SignUtils.getInstance().getDescription().getVersion();
     private boolean betaVersion = versionExact.contains("-SNAPSHOT") || versionExact.contains("-BETA") || versionExact.contains("-ALPHA");
