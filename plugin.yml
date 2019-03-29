@@ -1,7 +1,7 @@
 name: SignUtils
 main: me.RockinChaos.signutils.SignUtils
 api-version: 1.13
-version: 0.0.1-SNAPSHOT
+version: 1.0.0-SNAPSHOT
 description: Set custom elements to signs.
 website: PastePlugiNURLHere
 softdepend:: [BetterNick, PlaceholderAPI, Vault]

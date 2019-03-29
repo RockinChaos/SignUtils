@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.RockinChaos.signutils</groupId>
 	<artifactId>SignUtils</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-RELEASE</version>
 	<build>
 		<sourceDirectory>${project.basedir}</sourceDirectory>
 		<resources>
@@ -195,5 +195,5 @@
 		<system>Jenkins</system>
 		<url>http://ci.craftationgaming.com/job/SignUtils/</url>
 	</ciManagement>
-	<description>Set custom elements to signs.</description>
+	<description>Create custom utility signs.</description>
 </project>
