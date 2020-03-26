@@ -6,12 +6,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-
+/**
+ * Welcome to the magical land of make-believe.
+ * These are Deprecated Legacy Methods and/or non-functioning methods
+ * that exist to support legacy versions of Minecraft.
+ * 
+ */
 @SuppressWarnings("deprecation")
 public class Legacy {
 	
-	// WELCOME TO THE LAND OF MAKE-BELIEVE! //
-    
     public static void updateLegacyInventory(Player player) {
     	player.updateInventory();
     }

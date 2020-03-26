@@ -4,11 +4,9 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import me.RockinChaos.signutils.handlers.ConfigHandler;
-import me.RockinChaos.signutils.handlers.MemoryHandler;
 import me.RockinChaos.signutils.handlers.PermissionsHandler;
-import me.RockinChaos.signutils.handlers.PlayerHandler;
 import me.RockinChaos.signutils.utils.Language;
-import me.RockinChaos.signutils.utils.VaultAPI;
+import me.RockinChaos.signutils.utils.Utility;
 
 public class Commands implements CommandExecutor {
 	
@@ -29,7 +27,7 @@ public class Commands implements CommandExecutor {
 				Language.dispatchMessage(sender, "&d&l/SignUtils Updates &7- &dChecks for plugin updates.");
 				Language.dispatchMessage(sender, "&d&l/SignUtils AutoUpdate &7- &dUpdates to latest version.");
 				Language.dispatchMessage(sender, "&dType &d&l/SignUtils Help 2 &dfor the next page.");
-				Language.dispatchMessage(sender, "&d&l&m]----------------&d&l[&d Help Menu 1/2 &d&l]&d&l&m---------------[");
+				Language.dispatchMessage(sender, "&d&l&m]----------------&d&l[&5 Help Menu 1/2 &d&l]&d&l&m---------------[");
 				Language.dispatchMessage(sender, "");
 			} else { Language.sendLangMessage("Commands.Default.noPermission", sender); }
 			return true;
@@ -37,55 +35,70 @@ public class Commands implements CommandExecutor {
 			if (PermissionsHandler.isAuthorized(sender, "signutils.use")) {
 				Language.dispatchMessage(sender, "");
 				Language.dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
+				Language.dispatchMessage(sender, "&d&l/SignUtils Permissions &7- &dLists the permissions you have.");
 				Language.dispatchMessage(sender, "&d&l/SignUtils Rank &7- &dYour involved player group(s).");
 				Language.dispatchMessage(sender, "&d&l/SignUtils Rank <Player> &7- &dTheir involved player group(s).");
 				Language.dispatchMessage(sender, "&dFound a bug? Report it @");
 				Language.dispatchMessage(sender, "&dhttps://github.com/RockinChaos/SignUtils/issues");
-				Language.dispatchMessage(sender, "&d&l&m]----------------&d&l[&d Help Menu 2/2 &d&l]&d&l&m---------------[");
+				Language.dispatchMessage(sender, "&d&l&m]----------------&d&l[&5 Help Menu 2/2 &d&l]&d&l&m---------------[");
 				Language.dispatchMessage(sender, "");
 			} else { Language.sendLangMessage("Commands.Default.noPermission", sender); }
 			return true;
 		} else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
 			if (PermissionsHandler.isAuthorized(sender, "signutils.reload")) {
-				ConfigHandler.loadConfigs();
-				MemoryHandler.generateData();
+		  		ConfigHandler.generateData(null);
 				Language.sendLangMessage("Commands.Default.configReload", sender);
 			} else { Language.sendLangMessage("Commands.Default.noPermission", sender); }
 			return true;
 		} else if (args[0].equalsIgnoreCase("rank") || args[0].equalsIgnoreCase("ranks")) {
-			if (PermissionsHandler.isAuthorized(sender, "signutils.rank") && VaultAPI.vaultError(sender, true)) {
-				if (args.length == 2 && PermissionsHandler.isAuthorized(sender, "signutils.rank.others")) {
-					Player argsPlayer = PlayerHandler.getPlayerString(args[1]);
-					if (argsPlayer == null) { String[] placeHolders = Language.newString(); placeHolders[4] = args[1]; Language.sendLangMessage("Commands.Default.targetNotFound", sender, placeHolders); return true; }
-					String[] placeHolders = Language.newString(); placeHolders[2] = Integer.toString(VaultAPI.getGroups().getPlayerGroups(argsPlayer).length);
-					Language.sendLangMessage("Signs.Rank.playerLine", sender, placeHolders);
-					Language.sendLangMessage("Signs.Rank.groupSizeLine", sender, placeHolders);
-					for (String groupName : VaultAPI.getGroups().getPlayerGroups(argsPlayer)) {
-						placeHolders[3] = groupName;
-						Language.sendLangMessage("Signs.Rank.groupListLine", sender, placeHolders);
-					}
-				} else if (sender instanceof Player && PermissionsHandler.isAuthorized(sender, "signutils.rank")) {
-					String[] placeHolders = Language.newString(); placeHolders[2] = Integer.toString(VaultAPI.getGroups().getPlayerGroups((Player)sender).length);
-					Language.sendLangMessage("Signs.Rank.playerLine", sender, placeHolders);
-					Language.sendLangMessage("Signs.Rank.groupSizeLine", sender, placeHolders);
-					for (String groupName : VaultAPI.getGroups().getPlayerGroups((Player)sender)) {
-						placeHolders[3] = groupName;
-						Language.sendLangMessage("Signs.Rank.groupListLine", sender, placeHolders);
-					}
+			if ((args.length == 2 && PermissionsHandler.isAuthorized(sender, "signutils.rank.others")) || (args.length != 2 && PermissionsHandler.isAuthorized(sender, "signutils.rank"))) {
+				if (args.length == 2) {
+					Utility.signRank(sender, args[1]);
+					return true;
+				} else if (sender instanceof Player) {
+					Utility.signRank(sender, null);
+					return true;
 				} else { Language.sendLangMessage("Commands.Default.notPlayer", sender); }
-			} else if (VaultAPI.vaultError(sender, false)) { Language.sendLangMessage("Commands.Default.noPermission", sender); }
+			} else { Language.sendLangMessage("Commands.Default.noPermission", sender); }
+			return true;
+		} else if (args.length == 1 && args[0].equalsIgnoreCase("permissions")) {
+			if (PermissionsHandler.isAuthorized(sender, "itemjoin.permissions")) {
+				if (!(sender instanceof ConsoleCommandSender)) {
+					Language.dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
+					if (PermissionsHandler.isAuthorized(sender, "signutils.*")) { Language.dispatchMessage(sender, "&a[\u2714] SignUtils.*"); } 
+					else { Language.dispatchMessage(sender, "&c[\u2718] SignUtils.*"); }
+					if (PermissionsHandler.isAuthorized(sender, "signutils.all")) { Language.dispatchMessage(sender, "&a[\u2714] SignUtils.All"); } 
+					else { Language.dispatchMessage(sender, "&c[\u2718] SignUtils.All"); }
+					if (PermissionsHandler.isAuthorized(sender, "signutils.use")) { Language.dispatchMessage(sender, "&a[\u2714] SignUtils.Use"); } 
+					else { Language.dispatchMessage(sender, "&c[\u2718] SignUtils.Use"); }
+					if (PermissionsHandler.isAuthorized(sender, "signutils.rank")) { Language.dispatchMessage(sender, "&a[\u2714] SignUtils.rank"); } 
+					else { Language.dispatchMessage(sender, "&c[\u2718] SignUtils.rank"); }
+					if (PermissionsHandler.isAuthorized(sender, "signutils.rank.others")) { Language.dispatchMessage(sender, "&a[\u2714] SignUtils.rank.others"); }
+					else { Language.dispatchMessage(sender, "&c[\u2718] ItemJoin.get.others"); }
+					if (PermissionsHandler.isAuthorized(sender, "signutils.reload")) { Language.dispatchMessage(sender, "&a[\u2714] SignUtils.Reload"); } 
+					else { Language.dispatchMessage(sender, "&c[\u2718] SignUtils.Reload"); }
+					if (PermissionsHandler.isAuthorized(sender, "signutils.updates")) { Language.dispatchMessage(sender, "&a[\u2714] SignUtils.Updates"); }
+					else { Language.dispatchMessage(sender, "&c[\u2718] SignUtils.Updates"); }
+					if (PermissionsHandler.isAuthorized(sender, "signutils.autoupdate")) { Language.dispatchMessage(sender, "&a[\u2714] SignUtils.AutoUpdate"); }
+					else { Language.dispatchMessage(sender, "&c[\u2718] SignUtils.AutoUpdate"); }
+					if (PermissionsHandler.isAuthorized(sender, "signutils.permissions")) { Language.dispatchMessage(sender, "&a[\u2714] SignUtils.permissions"); } 
+					else { Language.dispatchMessage(sender, "&c[\u2718] SignUtils.permissions"); }
+					Language.dispatchMessage(sender, "&d&l&m]------------&d&l[&5 Permissions Menu 1/1 &d&l]&d&l&m------------[");
+				} else if (sender instanceof ConsoleCommandSender) { Language.sendLangMessage("Commands.Default.notPlayer", sender); }
+			} else { Language.sendLangMessage("Commands.Default.noPermission", sender); }
 			return true;
 		} else if (args[0].equalsIgnoreCase("updates") || args[0].equalsIgnoreCase("update")) {
 			if (PermissionsHandler.isAuthorized(sender, "signutils.updates")) {
 				Language.sendLangMessage("Commands.Updates.checking", sender);
-				MemoryHandler.getUpdater().checkUpdates(sender);
+				ConfigHandler.getUpdater().checkUpdates(sender, false);
 			} else { Language.sendLangMessage("Commands.Default.noPermission", sender); }
 			return true;
 		} else if (args[0].equalsIgnoreCase("AutoUpdate")) {
 			if (PermissionsHandler.isAuthorized(sender, "signutils.autoupdate")) {
 				Language.sendLangMessage("Commands.Updates.forcing", sender);
-				MemoryHandler.getUpdater().forceUpdates(sender);
+				ConfigHandler.getUpdater().forceUpdates(sender);
 			} else { Language.sendLangMessage("Commands.Default.noPermission", sender); }
+			return true;
 		} else { Language.sendLangMessage("Commands.Default.unknownCommand", sender); }
 		return true;
 	}

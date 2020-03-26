@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 
 import de.domedd.betternick.api.nickedplayer.NickedPlayer;
 import me.RockinChaos.signutils.handlers.ConfigHandler;
-import me.RockinChaos.signutils.handlers.MemoryHandler;
 import me.RockinChaos.signutils.handlers.ServerHandler;
 import me.clip.placeholderapi.PlaceholderAPI;
 
@@ -42,7 +41,7 @@ public class Utils {
 	public static String translateLayout(String name, Player player) {
 		String playerName = "EXEMPT";
 		
-		if (player != null && MemoryHandler.isBetterNick()) {
+		if (player != null && ConfigHandler.getDepends().nickEnabled()) {
 			NickedPlayer np = new NickedPlayer(player);
 			if (np.isNicked()) {
 			playerName = np.getRealName();
@@ -59,7 +58,7 @@ public class Utils {
 		if (player == null) { try { name = name.replace("%player%", "CONSOLE"); } catch (Exception e) { ServerHandler.sendDebugTrace(e); } }
 	
 		name = ChatColor.translateAlternateColorCodes('&', name).toString();
-		if (MemoryHandler.isPlaceholderAPI() == true) {
+		if (ConfigHandler.getDepends().placeHolderEnabled()) {
 			try { try { return PlaceholderAPI.setPlaceholders(player, name); } 
 			catch (NoSuchFieldError e) { ServerHandler.sendDebugMessage("Error has occured when setting the PlaceHolder " + e.getMessage() + ", if this issue persits contact the developer of PlaceholderAPI."); return name; }
 			} catch (Exception e) { }

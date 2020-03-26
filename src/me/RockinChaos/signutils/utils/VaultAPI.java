@@ -1,39 +1,63 @@
 package me.RockinChaos.signutils.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import me.RockinChaos.signutils.SignUtils;
+import me.RockinChaos.signutils.handlers.ConfigHandler;
 import me.RockinChaos.signutils.handlers.ServerHandler;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 public class VaultAPI {
-    private static boolean isEnabled = false;
-    private static Permission permission;
+    private Economy econ = null;
+    private Permission permission;
+    private boolean isEnabled = false;
     
-	public static void enableEconomy() { 
-		if (SignUtils.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
-			if (!setupPermissions()) {
-		      ServerHandler.sendErrorMessage("There was an issue setting up Vault Permissions!");
-		      ServerHandler.sendErrorMessage("If this continues, please contact the plugin developer!");
-		      return;
+    public VaultAPI() {
+    	this.setVaultStatus(Bukkit.getServer().getPluginManager().getPlugin("Vault") != null);
+    }
+    
+	private void enableEconomy() { 
+		if (ConfigHandler.getConfig("config.yml").getBoolean("softDepend.Vault") && SignUtils.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
+			if (!this.setupEconomy()) {
+				ServerHandler.sendErrorMessage("There was an issue setting up Vault Economy!");
+				ServerHandler.sendErrorMessage("If this continues, please contact the plugin developer!");
+			}
+			if (!this.setupPermissions()) {
+				ServerHandler.sendErrorMessage("There was an issue setting up Vault Permissions!");
+				ServerHandler.sendErrorMessage("If this continues, please contact the plugin developer!");
+				return;
 			}
 		}
 	}
-    
-    private static boolean setupPermissions() {
-      if (SignUtils.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) {  return false; }
-      RegisteredServiceProvider<Permission> permissionProvider = SignUtils.getInstance().getServer().getServicesManager().getRegistration(Permission.class);
-      if (permissionProvider != null) { permission = ((Permission)permissionProvider.getProvider()); }
-      return permission != null;
+
+    private boolean setupEconomy() {
+        if (SignUtils.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) { return false; }
+        RegisteredServiceProvider<Economy> rsp = SignUtils.getInstance().getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) { return false; }
+        this.econ = rsp.getProvider();
+        return this.econ != null;
     }
     
-    public static Permission getGroups() {
-    	return permission;
+    private boolean setupPermissions() {
+    	if (SignUtils.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) { return false; }
+        RegisteredServiceProvider<Permission> permissionProvider = SignUtils.getInstance().getServer().getServicesManager().getRegistration(Permission.class);
+        if (permissionProvider != null) { permission = ((Permission)permissionProvider.getProvider()); }
+        return this.permission != null;
+    }
+      
+    public Permission getGroups() {
+    	return this.permission;
     }
     
-    public static boolean vaultError(CommandSender sender, boolean sendMessage) {
-    	if (vaultEnabled()) { return true; }
+    public Economy getEconomy() {
+        return this.econ;
+    }
+    
+    public boolean vaultError(CommandSender sender, boolean sendMessage) {
+    	if (this.isEnabled) { return true; }
     	else if (sendMessage) { 
     		String[] placeHolders = Language.newString(); placeHolders[5] = "Vault";
 			Language.sendLangMessage("Signs.Default.missingDependency", sender, placeHolders);
@@ -41,11 +65,12 @@ public class VaultAPI {
     	return false;
     }
     
-    public static boolean vaultEnabled() {
-    	return isEnabled;
+    public boolean vaultEnabled() {
+    	return this.isEnabled;
     }
     
-    public static void setVaultStatus(boolean bool) {
-    	isEnabled = bool;
+    private void setVaultStatus(boolean bool) {
+    	if (bool) { this.enableEconomy(); }
+    	this.isEnabled = bool;
     }
 }

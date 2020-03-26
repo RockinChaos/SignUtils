@@ -9,11 +9,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import me.RockinChaos.signutils.handlers.ConfigHandler;
 import me.RockinChaos.signutils.handlers.PermissionsHandler;
 import me.RockinChaos.signutils.utils.EffectsAPI;
 import me.RockinChaos.signutils.utils.Language;
+import me.RockinChaos.signutils.utils.Utility;
 import me.RockinChaos.signutils.utils.Utils;
-import me.RockinChaos.signutils.utils.VaultAPI;
 
 public class SignInteract implements Listener {
 
@@ -22,14 +23,8 @@ public class SignInteract implements Listener {
 		Player player = event.getPlayer();
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Utils.containsIgnoreCase(event.getClickedBlock().getType().name(), "SIGN")) {
 			Sign sign = (Sign) event.getClickedBlock().getState();
-			if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Language.returnLangMessage("Signs.Rank.signLine", player, false))) && VaultAPI.vaultError(player, false)) {
-				String[] placeHolders = Language.newString(); placeHolders[2] = Integer.toString(VaultAPI.getGroups().getPlayerGroups(player).length);
-				Language.sendLangMessage("Signs.Rank.playerLine", player, placeHolders);
-				Language.sendLangMessage("Signs.Rank.groupSizeLine", player, placeHolders);
-				for (String groupName : VaultAPI.getGroups().getPlayerGroups(player)) {
-					placeHolders[3] = groupName;
-					Language.sendLangMessage("Signs.Rank.groupListLine", player, placeHolders);
-				}
+			if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Language.returnLangMessage("Signs.Rank.signLine", player, false)))) {
+				Utility.signRank(player, null);
 			}
 		}
 	}
@@ -38,12 +33,12 @@ public class SignInteract implements Listener {
 	private void onSignPlace(SignChangeEvent event) {
 		Player player = event.getPlayer();
 		if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Language.returnLangMessage("Signs.Rank.signLine", player, false)))) {
-			if (PermissionsHandler.isAuthorized(player, "signutils.create") && VaultAPI.vaultError(player, true)) {
-				if (this.setDefault(event.getLines())) { for (int i = 0; i < 4; i++) { event.setLine(i, defaultSignLines(player, event.getLines(), i)); } }
+			if (PermissionsHandler.isAuthorized(player, "signutils.create") && ConfigHandler.getDepends().getVault().vaultError(player, true)) {
+				if (this.setDefault(event.getLines())) { for (int i = 0; i < 4; i++) { event.setLine(i, this.defaultSignLines(player, event.getLines(), i)); } }
 				else { for (int i = 0; i < 4; i++) { event.setLine(i, Utils.translateLayout(event.getLine(i), player)); } } 
 				EffectsAPI.playEffect(event.getBlock(), "VILLAGER_HAPPY", "ENTITY_EXPERIENCE_ORB_PICKUP");
 				Language.sendLangMessage("Signs.Default.signCreated", player);
-			} else if (!VaultAPI.vaultError(player, false)) {
+			} else if (!ConfigHandler.getDepends().getVault().vaultError(player, false)) {
 				EffectsAPI.playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
 				event.setCancelled(true);
 			} else {

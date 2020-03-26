@@ -1,16 +1,14 @@
 package me.RockinChaos.signutils.handlers;
-
+import me.RockinChaos.signutils.SignUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import me.RockinChaos.signutils.SignUtils;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -22,13 +20,11 @@ public class UpdateHandler {
     private File jarLink;
     private final String AUTOQUERY = "projects/signutils/files/latest";
     private final String AUTOHOST = "https://dev.bukkit.org/";
-    private final String SPIGOTURL = "https://www.spigotmc.org/resources/signutils.66019/";
-    private final String HOST = "https://www.spigotmc.org/api/general.php";
     private final int PROJECTID = 66019;
-    private final String KEY = ("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + PROJECTID);
+    private final String HOST = "https://api.spigotmc.org/legacy/update.php?resource=" + PROJECTID;
     private String versionExact = SignUtils.getInstance().getDescription().getVersion();
     private boolean betaVersion = versionExact.contains("-SNAPSHOT") || versionExact.contains("-BETA") || versionExact.contains("-ALPHA");
-    private String localeVersionRaw = versionExact.replaceAll("[a-z]", "").replace("-SNAPSHOT", "").replace("-BETA", "").replace("-ALPHA", "").replace("-RELEASE", "");
+    private String localeVersionRaw = versionExact.split("-")[0];
     private String latestVersionRaw;
     private double localeVersion = Double.parseDouble(localeVersionRaw.replace(".", ""));
     private double latestVersion;
@@ -41,7 +37,7 @@ public class UpdateHandler {
      */
     public UpdateHandler(File file){
        this.jarLink = file;
-       this.checkUpdates(SignUtils.getInstance().getServer().getConsoleSender());
+       this.checkUpdates(SignUtils.getInstance().getServer().getConsoleSender(), true);
     }
     
     /**
@@ -49,9 +45,9 @@ public class UpdateHandler {
      * Downloads and write the new data to the plugin jar file.
      */
     public void forceUpdates(CommandSender sender) {
-    	if (this.updateNeeded(sender)) {
+    	if (this.updateNeeded(sender, false)) {
     		ServerHandler.sendMessage(sender, "&aAn update has been found!");
-    		ServerHandler.sendMessage(sender, "&aAttempting to update from " + "&ev" + localeVersionRaw + " &ato the new "  + "&ev" + latestVersionRaw);
+    		ServerHandler.sendMessage(sender, "&aAttempting to update from " + "&ev" + this.localeVersionRaw + " &ato the new "  + "&ev" + this.latestVersionRaw);
     		try {
     			URL downloadUrl = new URL(this.AUTOHOST + this.AUTOQUERY);
     			HttpURLConnection httpConnection = (HttpURLConnection) downloadUrl.openConnection();
@@ -80,17 +76,14 @@ public class UpdateHandler {
     			ServerHandler.sendMessage(sender, "&cPlease try again later, if you continue to see this please contact the plugin developer.");
     			ServerHandler.sendDebugTrace(e);
     		}
-    	} else if (!this.updatesAllowed) {
-    		ServerHandler.sendMessage(sender, "&cUpdate checking is currently disabled in the config.yml");
-    		ServerHandler.sendMessage(sender, "&cIf you wish to use the auto update feature, you will need to enable it.");
-        }
+    	}
     }
     
     /**
      * Checks to see if an update is required, notifying the console window and online op players.
      */
-    public void checkUpdates(CommandSender sender) {
-    	if (this.updateNeeded(sender)) {
+    public void checkUpdates(CommandSender sender, boolean onStart) {
+    	if (this.updateNeeded(sender, onStart) && this.updatesAllowed) {
     		if (this.betaVersion) {
     			ServerHandler.sendMessage(sender, "&cYour current version: &bv" + this.localeVersionRaw + "-SNAPSHOT");
     			ServerHandler.sendMessage(sender, "&cThis &bSNAPSHOT &cis outdated and a release version is now available.");
@@ -98,10 +91,10 @@ public class UpdateHandler {
     			ServerHandler.sendMessage(sender, "&cYour current version: &bv" + this.localeVersionRaw);
     		}
     		ServerHandler.sendMessage(sender, "&cA new version is available: " + "&av" + this.latestVersionRaw);
-    		ServerHandler.sendMessage(sender, "&aGet it from: " + SPIGOTURL + "/history");
+    		ServerHandler.sendMessage(sender, "&aGet it from: https://www.spigotmc.org/resources/signutils.66019/history");
     		ServerHandler.sendMessage(sender, "&aIf you wish to auto update, please type /SignUtils AutoUpdate");
     		this.sendNotifications();
-    	} else {
+    	} else if (this.updatesAllowed) {
     		if (this.betaVersion) {
     			ServerHandler.sendMessage(sender, "&aYou are running a SNAPSHOT!");
     			ServerHandler.sendMessage(sender, "&aIf you find any bugs please report them!");
@@ -113,15 +106,12 @@ public class UpdateHandler {
     /**
      * Directly checks to see if the spigotmc host has an update available.
      */
-    private Boolean updateNeeded(CommandSender sender) {
+    private Boolean updateNeeded(CommandSender sender, boolean onStart) {
     	if (this.updatesAllowed) {
     		ServerHandler.sendMessage(sender, "&aChecking for updates...");
     		try {
-    			HttpURLConnection con = (HttpURLConnection) new URL(this.HOST).openConnection();
-    			con.setDoOutput(true);
-    			con.setRequestMethod("POST");
-    			con.getOutputStream().write(this.KEY.getBytes("UTF-8"));
-    			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    			InputStream input = (InputStream) new URL(this.HOST).openStream();
+    			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
     			String version = reader.readLine();
     			reader.close();
     			if (version.length() <= 7) {
@@ -137,7 +127,10 @@ public class UpdateHandler {
     			ServerHandler.sendDebugTrace(e);
     			return false;
     		}
-    	}
+    	} else if (!onStart) {
+    		ServerHandler.sendMessage(sender, "&cUpdate checking is currently disabled in the config.yml");
+    		ServerHandler.sendMessage(sender, "&cIf you wish to use the auto update feature, you will need to enable it.");
+        }
     	return false;
     }
     

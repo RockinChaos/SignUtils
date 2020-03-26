@@ -13,7 +13,7 @@ public class PlayerHandler {
 	public static Player getPlayerString(String playerName) {
 		Player args = null;
 		try { args = Bukkit.getPlayer(UUID.fromString(playerName)); } catch (Exception e) {}
-		if (playerName != null && MemoryHandler.isBetterNick()) {
+		if (playerName != null && ConfigHandler.getDepends().nickEnabled()) {
 			NickedPlayer np = new NickedPlayer(Legacy.getLegacyPlayer(playerName));
 			if (np.isNicked()) {
 			return Legacy.getLegacyPlayer(np.getRealName());
