@@ -1,6 +1,6 @@
 # --{ =-=-=-=-=-=-=-=-=-= SignUtils English Language file, by RockinChaos =-=-=-=-=-=-=-=-=-= }--
 # If you don't want a message to be sent, fully remove it from below or make it blank.
-en-Version: 0
+en-Version: 1
 
 # This is the prefix that will be sent at the beginning of every single message sent in the language file.
 Prefix: '&7[&5SignUtils&7]'
