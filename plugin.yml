@@ -1,56 +1,21 @@
-name: SignUtils
 main: me.RockinChaos.signutils.SignUtils
+version: 1.0.1-SNAPSHOT-b${env.BUILD_NUMBER}
+name: SignUtils
+author: RockinChaos
 api-version: 1.13
-version: 1.0.0
+load: POSTWORLD
 description: Create custom utility signs.
 website: https://www.spigotmc.org/resources/signutils.66019/
-softdepend:: [BetterNick, PlaceholderAPI, Vault]
-
-commands:
-   signutils:
-      description: Displays a menu giving credit to the creator and the help menu command.
-      permission: signutils.use
-      usage: |
-          /signutils
-   signutils help:
-      description: Displays the plugin help menu.
-      permission: signutils.use
-      usage: |
-          /signutils help
-   signutils reload:
-      description: Reloads the plugin configuration files.
-      permission: signutils.reload
-      usage: |
-          /signutils reload
-   signutils rank:
-      description: Sends the executor their rank information.
-      permission: signutils.rank
-      usage: |
-          /signutils rank
-   signutils rank <player>:
-      description: Sends the executor the specified players rank information.
-      permission: signutils.rank.others
-      usage: |
-          /signutils rank <player>
-   signutils updates:
-      description: Checks to see if there is an update available for the plugin.
-      permission: signutils.updates
-      usage: |
-          /signutils updates
-   signutils autoupdate:
-      description: Checks if an update exists for the plugin, then installs the latest version for you.
-      permission: signutils.autoupdate
-      usage: |
-          /signutils autoupdate
+softdepend: [BetterNick, PlaceholderAPI, Vault]
 
 permissions:
    signutils.*:
-      description: Allows use of all commands.
+      description: Allows use of all commands and utility signs.
       default: false
       children:
           signutils.all: true
    signutils.all:
-      description: Allows use of all commands.
+      description: Allows use of all commands and utility signs.
       default: false
       children:
           signutils.use: true
@@ -70,7 +35,7 @@ permissions:
       description: Allows the user to use the rank command.
       default: false
    signutils.rank.others:
-      description: Allows the user to use the rank <player> command.
+      description: Allows the user to use the rank command for other players.
       default: false
    signutils.updates:
       description: Allows the use of the updates command.
@@ -79,5 +44,14 @@ permissions:
       description: Allows the use of the autoupdate command.
       default: false
    signutils.create:
-      description: Allows the user to create custom signutils signs.
+      description: Allows the user to create custom utility signs.
       default: false
+      
+commands:
+   signutils:
+      description: Displays a menu giving credit to the creator and the help menu command.
+      permission: signutils.use
+      aliases: [su]
+      usage: |
+          /signutils
+          Example: /signutils

@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.RockinChaos.signutils</groupId>
 	<artifactId>SignUtils</artifactId>
-	<version>1.0.0-RELEASE</version>
+	<version>1.0.1-SNAPSHOT-b${env.BUILD_NUMBER}</version>
 	<build>
 		<sourceDirectory>${project.basedir}</sourceDirectory>
 		<resources>
@@ -15,27 +15,34 @@
 				<filtering>true</filtering>
 				<directory>.</directory>
 				<includes>
-					<include>plugin.yml</include>
-					<include>config.yml</include>
-					<include>en-lang.yml</include>
-					<include>LICENSE.txt</include>
+					<include>*.yml</include>
+				</includes>
+			</resource>
+			<resource>
+				<targetPath>./files</targetPath>
+				<filtering>true</filtering>
+				<directory>./files</directory>
+				<includes>
+					<include>**/*.yml</include>
+					<include>**/*.txt</include>
+					<include>**/*.jpg</include>
 				</includes>
 			</resource>
 		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.8.1</version>
 				<configuration>
 					<encoding>Cp1252</encoding>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.5</version>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -187,6 +194,7 @@
 	</organization>
 	<name>SignUtils</name>
 	<url>https://www.spigotmc.org/resources/signutils.66019/</url>
+    <description>Create custom utility signs.</description>
 	<issueManagement>
 		<url>https://github.com/RockinChaos/SignUtils/issues</url>
 		<system>Github</system>
@@ -195,5 +203,4 @@
 		<system>Jenkins</system>
 		<url>http://ci.craftationgaming.com/job/SignUtils/</url>
 	</ciManagement>
-	<description>Create custom utility signs.</description>
 </project>
