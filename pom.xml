@@ -42,6 +42,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.2.1</version>
+				<configuration>
+					<finalName>SignUtils-${project.version}-b${env.BUILD_NUMBER}</finalName>
+				</configuration>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -49,19 +52,6 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<artifactSet>
-								<includes>
-									<include>tv.mineinthebox.simpleserver:SimpleHttpServer:jar:</include>
-								</includes>
-							</artifactSet>
-							<relocations>
-								<relocation>
-									<pattern>tv.mineinthebox.simpleserver</pattern>
-									<shadedPattern>tv.mineinthebox.simpleserver</shadedPattern>
-									<pattern>com.googlecode.json-simple</pattern>
-									<shadedPattern>com.googlecode.json-simple</shadedPattern>
-								</relocation>
-							</relocations>
 							<filters>
 								<filter>
 									<artifact>*</artifact>
