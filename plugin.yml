@@ -1,9 +1,9 @@
 main: me.RockinChaos.signutils.SignUtils
-version: 1.0.1-SNAPSHOT-b${env.BUILD_NUMBER}
+version: ${project.version}-b${env.BUILD_NUMBER}
 name: SignUtils
 author: RockinChaos
-api-version: 1.13
 load: POSTWORLD
+api-version: 1.13
 description: Create custom utility signs.
 website: https://www.spigotmc.org/resources/signutils.66019/
 softdepend: [BetterNick, PlaceholderAPI, Vault]
