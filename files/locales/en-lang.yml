@@ -8,21 +8,21 @@ Prefix: '&7[&5SignUtils&7]'
 # These messages are specific to the plugin commands.
 Commands:
   Default:
-    unknownCommand: '&cUnknown command!'
-    configReload: '&aConfiguration(s) Reloaded!'
-    noPermission: '&cYou do not have permission to use that command!'
-    notPlayer: '&cYou must be a player to execute that command!'
-    targetNotFound: '&cThe player &b&l%targetplayer% &ccould not be found!'
+    unknownCommand: '%prefix% &cUnknown command!'
+    configReload: '%prefix% &aConfiguration(s) Reloaded!'
+    noPermission: '%prefix% &cYou do not have permission to use that command!'
+    notPlayer: '%prefix% &cYou must be a player to execute that command!'
+    targetNotFound: '%prefix% &cThe player &b&l%targetplayer% &ccould not be found!'
   Updates:
-    checking: '&4%player% has requested to check for updates!'
-    forcing: '&4%player% has requested to force update the plugin!'
+    checking: '%prefix% &4%player% has requested to check for updates!'
+    forcing: '%prefix% &4%player% has requested to force update the plugin!'
   
 # These messages are specific to the plugins utility signs.  
 Signs:
   Default:
-    signCreated: '&aSign successfully created!'
-    noPermission: '&cYou do not have permission to create a utility sign!'
-    missingDependency: '&c&lWARNING! &cYou must have &b&l%dependency% &cinstalled and enabled in the config.yml to use this utility sign!'
+    signCreated: '%prefix% &aSign successfully created!'
+    noPermission: '%prefix% &cYou do not have permission to create a utility sign!'
+    missingDependency: '%prefix% &c&lWARNING! &cYou must have &b&l%dependency% &cinstalled and enabled in the config.yml to use this utility sign!'
   Rank: # These are messages specific to the Rank utility sign.
     signLine: '[Rank]'
     playerLine: '&7&m&l=======&r &4&l%player% &7&m&l======='

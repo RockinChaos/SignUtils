@@ -1,3 +1,20 @@
+/*
+ * SignUtils
+ * Copyright (C) CraftationGaming <https://www.craftationgaming.com/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.RockinChaos.signutils.utils;
 
 import org.bukkit.Bukkit;
@@ -24,9 +41,9 @@ import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * bStats Metrics Collection
- * Collects some data for plugin authors.
- */
+* bStats Metrics Collection
+* Collects some data for plugin authors.
+*/
 public class Metrics {
     public static final int B_STATS_VERSION = 1;
     private static final String URL = "https://bStats.org/submitData/bukkit";
@@ -37,18 +54,20 @@ public class Metrics {
     private static String serverUUID;
     private final Plugin plugin;
     private final List<CustomChart> charts = new ArrayList<>();
+    
+    private static Metrics metrics;
 
-    /**
-     * Class constructor.
-     *
-     * @param plugin The plugin which stats should be submitted.
-     */
+   /**
+    * Class constructor.
+    *
+    * @param plugin The plugin which stats should be submitted.
+    */
     public Metrics() {
 	        if (SignUtils.getInstance() == null) {
 	            throw new IllegalArgumentException("Plugin cannot be null!");
 	        }
 	        this.plugin = SignUtils.getInstance();
-			if (ConfigHandler.getConfig("config.yml").getBoolean("General.Metrics-Logging")) { 
+			if (ConfigHandler.getConfig(false).getFile("config.yml").getBoolean("General.Metrics-Logging")) { 
 	        File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
 	        File configFile = new File(bStatsFolder, "config.yml");
 	        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
@@ -89,10 +108,10 @@ public class Metrics {
 	                startSubmitting();
 	            }
 	        }
-	        this.addCustomChart(new Metrics.SimplePie("language", Language.getLanguage()));
-	        this.addCustomChart(new Metrics.SimplePie("softDepend", ConfigHandler.getDepends().placeHolderEnabled() ? "PlaceholderAPI" : ""));
-	        this.addCustomChart(new Metrics.SimplePie("softDepend", ConfigHandler.getDepends().nickEnabled() ? "BetterNick" : ""));
-	        this.addCustomChart(new Metrics.SimplePie("softDepend", ConfigHandler.getDepends().getVault().vaultEnabled() ? "Vault" : ""));
+	        this.addCustomChart(new Metrics.SimplePie("language", LanguageAPI.getLang(false).getLanguage()));
+	        this.addCustomChart(new Metrics.SimplePie("softDepend", DependAPI.getDepends(false).placeHolderEnabled() ? "PlaceholderAPI" : ""));
+	        this.addCustomChart(new Metrics.SimplePie("softDepend", DependAPI.getDepends(false).nickEnabled() ? "BetterNick" : ""));
+	        this.addCustomChart(new Metrics.SimplePie("softDepend", DependAPI.getDepends(false).getVault().vaultEnabled() ? "Vault" : ""));
 		}
     }
 
@@ -247,7 +266,7 @@ public class Metrics {
      * @param data The data to send.
      * @throws Exception If the request failed.
      */
-    private static void sendData(Plugin plugin, JSONObject data) throws Exception {
+    private static void sendData(final Plugin plugin, final JSONObject data) throws Exception {
         if (data == null) {
             throw new IllegalArgumentException("Data cannot be null!");
         }
@@ -315,7 +334,7 @@ public class Metrics {
          *
          * @param chartId The id of the chart.
          */
-        CustomChart(String chartId) {
+        CustomChart(final String chartId) {
             if (chartId == null || chartId.isEmpty()) {
                 throw new IllegalArgumentException("ChartId cannot be null or empty!");
             }
@@ -357,7 +376,7 @@ public class Metrics {
          * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
-        public SimplePie(String chartId, String...callable) {
+        public SimplePie(final String chartId, final String...callable) {
             super(chartId);
             this.callable = callable;
         }
@@ -388,7 +407,7 @@ public class Metrics {
          * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
-        public AdvancedPie(String chartId, Callable<Map<String, Integer>> callable) {
+        public AdvancedPie(final String chartId, final Callable<Map<String, Integer>> callable) {
             super(chartId);
             this.callable = callable;
         }
@@ -430,7 +449,7 @@ public class Metrics {
          * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
-        public DrilldownPie(String chartId, Callable<Map<String, Map<String, Integer>>> callable) {
+        public DrilldownPie(final String chartId, final Callable<Map<String, Map<String, Integer>>> callable) {
             super(chartId);
             this.callable = callable;
         }
@@ -477,7 +496,7 @@ public class Metrics {
          * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
-        public SingleLineChart(String chartId, Callable<Integer> callable) {
+        public SingleLineChart(final String chartId, final Callable<Integer> callable) {
             super(chartId);
             this.callable = callable;
         }
@@ -508,7 +527,7 @@ public class Metrics {
          * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
-        public MultiLineChart(String chartId, Callable<Map<String, Integer>> callable) {
+        public MultiLineChart(final String chartId, final Callable<Map<String, Integer>> callable) {
             super(chartId);
             this.callable = callable;
         }
@@ -551,7 +570,7 @@ public class Metrics {
          * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
-        public SimpleBarChart(String chartId, Callable<Map<String, Integer>> callable) {
+        public SimpleBarChart(final String chartId, final Callable<Map<String, Integer>> callable) {
             super(chartId);
             this.callable = callable;
         }
@@ -588,7 +607,7 @@ public class Metrics {
          * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
-        public AdvancedBarChart(String chartId, Callable<Map<String, int[]>> callable) {
+        public AdvancedBarChart(final String chartId, final Callable<Map<String, int[]>> callable) {
             super(chartId);
             this.callable = callable;
         }
@@ -620,4 +639,15 @@ public class Metrics {
             return data;
         }
     }
+	
+   /**
+    * Gets the instance of the Metrics.
+    * 
+    * @param regen - If the Metrics should have a new instance created.
+    * @return The Metrics instance.
+    */
+    public static Metrics getMetrics(final boolean regen) { 
+        if (metrics == null || regen) { metrics = new Metrics(); }
+        return metrics; 
+    } 
 }

@@ -1,5 +1,5 @@
-# --{ =-=-=-=-=-=-=-=-=-= SignUtils Configuration Settings, by RockinChaos =-=-=-=-=-=-=-=-=-= }--
-# See the tutorial page for a more in-depth explaination; https://www.spigotmc.org/wiki/signutils/
+# --{ =-=-=-=-=-=-=-=-=-=-=-= SignUtils Configuration Settings, by RockinChaos =-=-=-=-=-=-=-=-=-=-=-= }--
+# See the tutorial page for a more in-depth explaination; https://github.com/RockinChaos/SignUtils/wiki
 config-Version: 1
 
 # English is currently the only support language at the moment!
@@ -10,7 +10,6 @@ Language: 'English'
 General:
   CheckforUpdates: true
   Metrics-Logging: true
-  Log-Coloration: true
   Debugging: false
   
 # These permissions if enabled, determine whether the permission(s) is/are applied to certain players.

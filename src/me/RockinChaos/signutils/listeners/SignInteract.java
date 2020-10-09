@@ -1,3 +1,20 @@
+/*
+ * SignUtils
+ * Copyright (C) CraftationGaming <https://www.craftationgaming.com/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.RockinChaos.signutils.listeners;
 
 import org.bukkit.ChatColor;
@@ -9,46 +26,61 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import me.RockinChaos.signutils.handlers.ConfigHandler;
 import me.RockinChaos.signutils.handlers.PermissionsHandler;
-import me.RockinChaos.signutils.utils.EffectsAPI;
-import me.RockinChaos.signutils.utils.Language;
-import me.RockinChaos.signutils.utils.Utility;
+import me.RockinChaos.signutils.signs.Ranks;
+import me.RockinChaos.signutils.utils.DependAPI;
+import me.RockinChaos.signutils.utils.LanguageAPI;
 import me.RockinChaos.signutils.utils.Utils;
 
 public class SignInteract implements Listener {
 
+   /**
+	* Checks for the players associated groups when clicking a sign.
+	* 
+	* @param event - PlayerInteractEvent
+	*/
 	@EventHandler
 	private void onSignClick(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Utils.containsIgnoreCase(event.getClickedBlock().getType().name(), "SIGN")) {
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Utils.getUtils().containsIgnoreCase(event.getClickedBlock().getType().name(), "SIGN")) {
 			Sign sign = (Sign) event.getClickedBlock().getState();
-			if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Language.returnLangMessage("Signs.Rank.signLine", player, false)))) {
-				Utility.signRank(player, null);
+			if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Utils.getUtils().translateLayout(LanguageAPI.getLang(false).getLangMessage("Signs.Rank.signLine"), player)))) {
+				Ranks.getRank().signRank(player, null);
 			}
 		}
 	}
 	
+   /**
+	* Sets the sign information when creating a utility sign.
+	* 
+	* @param event - SignChangeEvent
+	*/
 	@EventHandler
 	private void onSignPlace(SignChangeEvent event) {
 		Player player = event.getPlayer();
-		if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Language.returnLangMessage("Signs.Rank.signLine", player, false)))) {
-			if (PermissionsHandler.isAuthorized(player, "signutils.create") && ConfigHandler.getDepends().getVault().vaultError(player, true)) {
+		if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Utils.getUtils().translateLayout(LanguageAPI.getLang(false).getLangMessage("Signs.Rank.signLine"), player)))) {
+			if (PermissionsHandler.getPermissions().hasPermission(player, "signutils.create") && DependAPI.getDepends(false).getVault().vaultError(player, true)) {
 				if (this.setDefault(event.getLines())) { for (int i = 0; i < 4; i++) { event.setLine(i, this.defaultSignLines(player, event.getLines(), i)); } }
-				else { for (int i = 0; i < 4; i++) { event.setLine(i, Utils.translateLayout(event.getLine(i), player)); } } 
-				EffectsAPI.playEffect(event.getBlock(), "VILLAGER_HAPPY", "ENTITY_EXPERIENCE_ORB_PICKUP");
-				Language.sendLangMessage("Signs.Default.signCreated", player);
-			} else if (!ConfigHandler.getDepends().getVault().vaultError(player, false)) {
-				EffectsAPI.playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
+				else { for (int i = 0; i < 4; i++) { event.setLine(i, Utils.getUtils().translateLayout(event.getLine(i), player)); } } 
+				Utils.getUtils().playEffect(event.getBlock(), "VILLAGER_HAPPY", "ENTITY_EXPERIENCE_ORB_PICKUP");
+				LanguageAPI.getLang(false).sendLangMessage("Signs.Default.signCreated", player);
+			} else if (!DependAPI.getDepends(false).getVault().vaultError(player, false)) {
+				Utils.getUtils().playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
 				event.setCancelled(true);
 			} else {
-				EffectsAPI.playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
-				Language.sendLangMessage("Signs.Default.noPermission", player);
+				Utils.getUtils().playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
+				LanguageAPI.getLang(false).sendLangMessage("Signs.Default.noPermission", player);
 				event.setCancelled(true);
 			}
 		}
 	}
 	
+   /**
+    * Checks if the default sign lines should be used.
+    * 
+    * @param lines - The defined sign lines.
+    * @return If the default sign lines should be used.
+    */
 	private boolean setDefault(String[] lines) {
 		for (int i = 1; i < 4; i++) {
 			String signLine = lines[i];
@@ -57,11 +89,19 @@ public class SignInteract implements Listener {
 		return true;
 	}
 	
+   /**
+    * Attempts to get the specified sign line.
+    * 
+    * @param player - The Player that interacted with the sign.
+    * @param lines - The defined sign lines.
+    * @param i - The sign line to be fetched.
+    * @return The located sign line.
+    */
 	private String defaultSignLines(Player player, String[] lines, int i) {
 		switch(i) {
-		   case 0 : return Utils.translateLayout(lines[0], player);
-		   case 2 : return Utils.translateLayout("Click to Display", player);
-		   case 3 : return Utils.translateLayout("Your Groups", player);
+		   case 0 : return Utils.getUtils().translateLayout(lines[0], player);
+		   case 2 : return Utils.getUtils().translateLayout("Click to Display", player);
+		   case 3 : return Utils.getUtils().translateLayout("Your Groups", player);
 		   default : return "";
 		}
 	}
