@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.RockinChaos.signutils.utils;
+package me.RockinChaos.signutils.utils.api;
 
 import java.util.regex.Pattern;
 
@@ -25,7 +25,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import me.RockinChaos.signutils.handlers.ConfigHandler;
-import me.RockinChaos.signutils.handlers.ServerHandler;
+import me.RockinChaos.signutils.utils.ServerUtils;
+import me.RockinChaos.signutils.utils.StringUtils;
 	
 public class LanguageAPI {
 	private Lang langType = Lang.ENGLISH;
@@ -41,7 +42,7 @@ public class LanguageAPI {
     */
 	public void dispatchMessage(final CommandSender sender, String langMessage) { 
 		Player player = null; if (sender instanceof Player) { player = (Player) sender; }
-		langMessage = Utils.getUtils().translateLayout(langMessage, player);
+		langMessage = StringUtils.translateLayout(langMessage, player);
 		if (sender instanceof ConsoleCommandSender) { langMessage = ChatColor.stripColor(langMessage); } 
 		sender.sendMessage(langMessage);
 	}
@@ -55,15 +56,15 @@ public class LanguageAPI {
     */
 	public void sendLangMessage(final String nodeLocation, final CommandSender sender, final String...placeHolder) {
 		Player player = null; if (sender instanceof Player) { player = (Player) sender; }
-		String langMessage = this.getLangMessage(nodeLocation);
+		String langMessage = (sender.isPermissionSet("signutils.lang." + nodeLocation) ? sender.hasPermission("signutils.lang." + nodeLocation) ? this.getLangMessage(nodeLocation) : null : this.getLangMessage(nodeLocation));
 		if (langMessage != null && !langMessage.isEmpty()) {
 			langMessage = this.translateLangHolders(langMessage, this.initializeRows(placeHolder));
-			langMessage = Utils.getUtils().translateLayout(langMessage, player).replace(" \\n ", " \\n").replace(" /n ", " \\n").replace(" /n", " \\n");
+			langMessage = StringUtils.translateLayout(langMessage, player).replace(" \\n ", " \\n").replace(" /n ", " \\n").replace(" /n", " \\n");
 			String[] langLines = langMessage.split(Pattern.quote(" \\" + "n"));
 			for (String langLine : langLines) {
 				String langStrip = langLine;
 				if (sender instanceof ConsoleCommandSender) { langStrip = ChatColor.stripColor(langStrip); } 
-				if (this.isConsoleMessage(nodeLocation)) { ServerHandler.getServer().logInfo(ChatColor.stripColor(langLine)); }
+				if (this.isConsoleMessage(nodeLocation)) { ServerUtils.logInfo(ChatColor.stripColor(langLine)); }
 				else { sender.sendMessage(langStrip);	}
 			}
 		}
@@ -75,7 +76,7 @@ public class LanguageAPI {
     * @param nodeLocation - The String location of the Language Message. 
     */
 	public String getLangMessage(final String nodeLocation) {
-		String message = ConfigHandler.getConfig(false).getFile(this.langType.nodeLocation()).getString(nodeLocation);
+		String message = ConfigHandler.getConfig().getFile(this.langType.nodeLocation()).getString(nodeLocation);
 		return (message != null && message.isEmpty() ? null : message);
 	}
 	
@@ -166,7 +167,7 @@ public class LanguageAPI {
     * 
     */
 	public void setPrefix() {
-		this.langPrefix = Utils.getUtils().colorFormat(ConfigHandler.getConfig(false).getFile(this.langType.nodeLocation()).getString("Prefix"));
+		this.langPrefix = StringUtils.colorFormat(ConfigHandler.getConfig().getFile(this.langType.nodeLocation()).getString("Prefix"));
 	}
 	
    /**
@@ -195,10 +196,10 @@ public class LanguageAPI {
     * 
     */
 	public void langFile() {
-		String lang = ConfigHandler.getConfig(false).getFile("config.yml").getString("Language").replace(" ", "");
+		String lang = ConfigHandler.getConfig().getFile("config.yml").getString("Language").replace(" ", "");
 		if (lang.equalsIgnoreCase("TraditionalChinese") || lang.equalsIgnoreCase("TwChinese") || lang.equalsIgnoreCase("Chinese")) { this.setLanguage("tw"); } 
 		else if (lang.equalsIgnoreCase("SimplifiedChinese") || lang.equalsIgnoreCase("CnChinese")) { this.setLanguage("cn"); } 
-		else if (Utils.getUtils().containsIgnoreCase(lang, "Chinese")) { this.setLanguage("tw"); } 
+		else if (StringUtils.containsIgnoreCase(lang, "Chinese")) { this.setLanguage("tw"); } 
 		else if (lang.equalsIgnoreCase("Spanish")) { this.setLanguage("es"); } 
 		else if (lang.equalsIgnoreCase("Russian")) { this.setLanguage("ru"); } 
 		else if (lang.equalsIgnoreCase("French")) { this.setLanguage("fr"); } 

@@ -17,18 +17,19 @@
  */
 package me.RockinChaos.signutils.handlers;
 
+import java.util.Collection;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import de.domedd.betternick.BetterNick;
-import me.RockinChaos.signutils.utils.DependAPI;
-import me.RockinChaos.signutils.utils.LegacyAPI;
+import me.RockinChaos.signutils.utils.ServerUtils;
+import me.RockinChaos.signutils.utils.api.DependAPI;
+import me.RockinChaos.signutils.utils.api.LegacyAPI;
 
 public class PlayerHandler {
-	
-	private static PlayerHandler player;
 
    /**
     * Gets the Player instance from their String name.
@@ -36,29 +37,47 @@ public class PlayerHandler {
     * @param playerName - The player name to be transformed.
     * @return The fetched Player instance.
     */
-	public Player getPlayerString(final String playerName) {
+	public static Player getPlayerString(final String playerName) {
 		Player args = null;
 		try { args = Bukkit.getPlayer(UUID.fromString(playerName)); } catch (Exception e) {}
 		if (playerName != null && DependAPI.getDepends(false).nickEnabled()) {
 			try { 
-				de.domedd.betternick.api.nickedplayer.NickedPlayer np = new de.domedd.betternick.api.nickedplayer.NickedPlayer(LegacyAPI.getLegacy().getPlayer(playerName));
-				if (np.isNicked()) { return LegacyAPI.getLegacy().getPlayer(np.getRealName()); }
-				else { return LegacyAPI.getLegacy().getPlayer(playerName); }
+				de.domedd.betternick.api.nickedplayer.NickedPlayer np = new de.domedd.betternick.api.nickedplayer.NickedPlayer(LegacyAPI.getPlayer(playerName));
+				if (np.isNicked()) { return LegacyAPI.getPlayer(np.getRealName()); }
+				else { return LegacyAPI.getPlayer(playerName); }
 			} catch (NoClassDefFoundError e) {
-				if (BetterNick.getApi().isPlayerNicked(LegacyAPI.getLegacy().getPlayer(playerName))) { return LegacyAPI.getLegacy().getPlayer(BetterNick.getApi().getRealName(LegacyAPI.getLegacy().getPlayer(playerName))); }
-				else { return LegacyAPI.getLegacy().getPlayer(playerName); }
+				if (BetterNick.getApi().isPlayerNicked(LegacyAPI.getPlayer(playerName))) { return LegacyAPI.getPlayer(BetterNick.getApi().getRealName(LegacyAPI.getPlayer(playerName))); }
+				else { return LegacyAPI.getPlayer(playerName); }
 			}
-		} else if (args == null) { return LegacyAPI.getLegacy().getPlayer(playerName); }
+		} else if (args == null) { return LegacyAPI.getPlayer(playerName); }
 		return args;
 	}
-	
+
    /**
-    * Gets the instance of the PlayerHandler.
+    * Executes an input of methods for the currently online players.
     * 
-    * @return The PlayerHandler instance.
+    * @param input - The methods to be executed.
     */
-    public static PlayerHandler getPlayer() { 
-        if (player == null) { player = new PlayerHandler(); }
-        return player; 
-    } 
+    public static void forOnlinePlayers(final Consumer<Player> input) {
+		try {
+		  /** New method for getting the current online players.
+			* This is for MC 1.12+
+			*/
+			if (Bukkit.class.getMethod("getOnlinePlayers", new Class < ? > [0]).getReturnType() == Collection.class) {
+				for (Object objPlayer: ((Collection < ? > ) Bukkit.class.getMethod("getOnlinePlayers", new Class < ? > [0]).invoke(null, new Object[0]))) { 
+					input.accept(((Player) objPlayer));
+				}
+			} 
+		  /** New old for getting the current online players.
+			* This is for MC versions below 1.12.
+			* 
+			* @deprecated Legacy version of getting online players.
+			*/
+			else {
+				for (Player player: ((Player[]) Bukkit.class.getMethod("getOnlinePlayers", new Class < ? > [0]).invoke(null, new Object[0]))) {
+					input.accept(player);
+				}
+			}
+		} catch (Exception e) { ServerUtils.sendDebugTrace(e); }
+	}
 }

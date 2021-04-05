@@ -21,13 +21,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.RockinChaos.signutils.handlers.PlayerHandler;
-import me.RockinChaos.signutils.utils.DependAPI;
-import me.RockinChaos.signutils.utils.LanguageAPI;
+import me.RockinChaos.signutils.utils.api.DependAPI;
+import me.RockinChaos.signutils.utils.api.LanguageAPI;
 import net.milkbowl.vault.permission.Permission;
 
 public class Ranks {
-	
-	private static Ranks ranks;
 	
    /**
     * Checks for the associated player groups.
@@ -35,16 +33,16 @@ public class Ranks {
     * @param playerName - The player to have their rank checked.
     * @param otherPlayer - The other player to have their rank checked.
     */
-	public void signRank(CommandSender sender, String otherPlayer) {
+	public static void signRank(CommandSender sender, String otherPlayer) {
 		if (DependAPI.getDepends(false).getVault().vaultError(sender, true)) {
-			if (otherPlayer != null && !otherPlayer.isEmpty() && PlayerHandler.getPlayer().getPlayerString(otherPlayer) == null) {
+			if (otherPlayer != null && !otherPlayer.isEmpty() && PlayerHandler.getPlayerString(otherPlayer) == null) {
 				String[] placeHolders = LanguageAPI.getLang(false).newString();
 				placeHolders[4] = otherPlayer;
-				LanguageAPI.getLang(false).sendLangMessage("Commands.Default.targetNotFound", sender, placeHolders);
+				LanguageAPI.getLang(false).sendLangMessage("commands.default.noTarget", sender, placeHolders);
 			} else {
 				Player player = null;
 				if (otherPlayer != null && !otherPlayer.isEmpty()) {
-					player = PlayerHandler.getPlayer().getPlayerString(otherPlayer);
+					player = PlayerHandler.getPlayerString(otherPlayer);
 				} else if (sender instanceof Player) { player = (Player) sender; }
 				String[] placeHolders = LanguageAPI.getLang(false).newString();
 				int groups = 0;
@@ -55,26 +53,15 @@ public class Ranks {
 				}
 				placeHolders[2] = Integer.toString(groups);
 				placeHolders[6] = player.getName();
-				LanguageAPI.getLang(false).sendLangMessage("Signs.Rank.playerLine", sender, placeHolders);
-				LanguageAPI.getLang(false).sendLangMessage("Signs.Rank.groupSizeLine", sender, placeHolders);
+				LanguageAPI.getLang(false).sendLangMessage("signs.rank.playerLine", sender, placeHolders);
+				LanguageAPI.getLang(false).sendLangMessage("signs.rank.groupSizeLine", sender, placeHolders);
 				if (permissionGroups != null) {
 					for (String groupName: DependAPI.getDepends(false).getVault().getPermissions().getPlayerGroups(player)) {
 						placeHolders[3] = groupName;
-						LanguageAPI.getLang(false).sendLangMessage("Signs.Rank.groupListLine", sender, placeHolders);
+						LanguageAPI.getLang(false).sendLangMessage("signs.rank.groupListLine", sender, placeHolders);
 					}
 				}
 			}
 		}
 	}
-	
-   /**
-    * Gets the instance of the Ranks.
-    * 
-    * @param regen - If the Ranks should have a new instance created.
-    * @return The Ranks instance.
-    */
-    public static Ranks getRank() { 
-        if (ranks == null) { ranks = new Ranks(); }
-        return ranks; 
-    } 
 }

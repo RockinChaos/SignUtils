@@ -23,8 +23,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.RockinChaos.signutils.handlers.ConfigHandler;
-import me.RockinChaos.signutils.handlers.ServerHandler;
 import me.RockinChaos.signutils.handlers.UpdateHandler;
+import me.RockinChaos.signutils.utils.SchedulerUtils;
+import me.RockinChaos.signutils.utils.ServerUtils;
 
 public class SignUtils extends JavaPlugin {
 	
@@ -45,9 +46,12 @@ public class SignUtils extends JavaPlugin {
     */
 	@Override
 	public void onEnable() {
-		ConfigHandler.getConfig(true).registerEvents();
-		ServerHandler.getServer().runAsyncThread(async -> { UpdateHandler.getUpdater(true); });
-		ServerHandler.getServer().logInfo("has been Enabled.");
+		ConfigHandler.getConfig().registerEvents();
+        SchedulerUtils.runAsync(() -> {
+        	UpdateHandler.getUpdater(true); {
+        		ServerUtils.logDebug("has been Enabled.");
+        	}
+        });
 	}
 	
    /**
@@ -57,7 +61,7 @@ public class SignUtils extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		Bukkit.getScheduler().cancelTasks(this);
-		ServerHandler.getServer().logInfo("has been Disabled.");
+		ServerUtils.logDebug("has been Disabled.");
 	}
 	
    /**

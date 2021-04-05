@@ -24,10 +24,12 @@ import me.RockinChaos.signutils.handlers.ConfigHandler;
 import me.RockinChaos.signutils.handlers.PermissionsHandler;
 import me.RockinChaos.signutils.handlers.UpdateHandler;
 import me.RockinChaos.signutils.signs.Ranks;
-import me.RockinChaos.signutils.utils.LanguageAPI;
+import me.RockinChaos.signutils.utils.SchedulerUtils;
+import me.RockinChaos.signutils.utils.StringUtils;
+import me.RockinChaos.signutils.utils.api.LanguageAPI;
 
 public class ChatExecutor implements CommandExecutor {
-	
+
    /**
 	* Called when the CommandSender executes a command.
     * @param sender - Source of the command.
@@ -38,95 +40,194 @@ public class ChatExecutor implements CommandExecutor {
 	*/
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-		if (args.length == 0) {
-			if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.use")) {
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&5SignUtils v" + SignUtils.getInstance().getDescription().getVersion() + "&d by RockinChaos");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&5Type &l/SignUtils Help &5for the help menu.");
-			} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.noPermission", sender); }
-			return true;
-		} else if (args.length == 1 && args[0].equalsIgnoreCase("help") || args.length == 2 && args[0].equalsIgnoreCase("help") && args[1].equalsIgnoreCase("1")) {
-			if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.use")) {
-				LanguageAPI.getLang(false).dispatchMessage(sender, "");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&dSignUtils v" + SignUtils.getInstance().getDescription().getVersion() + "&d by RockinChaos");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Help &7- &dThis help menu.");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Reload &7- &dReloads the .yml files.");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Updates &7- &dChecks for plugin updates.");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils AutoUpdate &7- &dUpdates to latest version.");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&dType &d&l/SignUtils Help 2 &dfor the next page.");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]----------------&d&l[&5 Help Menu 1/2 &d&l]&d&l&m---------------[");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "");
-			} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.noPermission", sender); }
-			return true;
-		} else if (args.length == 2 && args[0].equalsIgnoreCase("help") && args[1].equalsIgnoreCase("2")) {
-			if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.use")) {
-				LanguageAPI.getLang(false).dispatchMessage(sender, "");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Permissions &7- &dLists the permissions you have.");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank &7- &dYour involved player group(s).");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank <Player> &7- &dTheir involved player group(s).");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&dFound a bug? Report it @");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&dhttps://github.com/RockinChaos/SignUtils/issues");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]----------------&d&l[&5 Help Menu 2/2 &d&l]&d&l&m---------------[");
-				LanguageAPI.getLang(false).dispatchMessage(sender, "");
-			} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.noPermission", sender); }
-			return true;
-		} else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
-			if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.reload")) {
-				ConfigHandler.getConfig(false);
-				LanguageAPI.getLang(false).sendLangMessage("Commands.Default.configReload", sender);
-			} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.noPermission", sender); }
-			return true;
-		} else if (args[0].equalsIgnoreCase("rank") || args[0].equalsIgnoreCase("ranks")) {
-			if ((args.length == 2 && PermissionsHandler.getPermissions().hasPermission(sender, "signutils.rank.others")) || (args.length != 2 && PermissionsHandler.getPermissions().hasPermission(sender, "signutils.rank"))) {
-				if (args.length == 2) {
-					Ranks.getRank().signRank(sender, args[1]);
-					return true;
-				} else if (sender instanceof Player) {
-					Ranks.getRank().signRank(sender, null);
-					return true;
-				} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.notPlayer", sender); }
-			} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.noPermission", sender); }
-			return true;
-		} else if (args.length == 1 && args[0].equalsIgnoreCase("permissions")) {
-			if (PermissionsHandler.getPermissions().hasPermission(sender, "itemjoin.permissions")) {
-				if (!(sender instanceof ConsoleCommandSender)) {
-					LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
-					if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.*")) { LanguageAPI.getLang(false).dispatchMessage(sender, "&a[\u2714] SignUtils.*"); } 
-					else { LanguageAPI.getLang(false).dispatchMessage(sender, "&c[\u2718] SignUtils.*"); }
-					if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.all")) { LanguageAPI.getLang(false).dispatchMessage(sender, "&a[\u2714] SignUtils.All"); } 
-					else { LanguageAPI.getLang(false).dispatchMessage(sender, "&c[\u2718] SignUtils.All"); }
-					if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.use")) { LanguageAPI.getLang(false).dispatchMessage(sender, "&a[\u2714] SignUtils.Use"); } 
-					else { LanguageAPI.getLang(false).dispatchMessage(sender, "&c[\u2718] SignUtils.Use"); }
-					if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.rank")) { LanguageAPI.getLang(false).dispatchMessage(sender, "&a[\u2714] SignUtils.rank"); } 
-					else { LanguageAPI.getLang(false).dispatchMessage(sender, "&c[\u2718] SignUtils.rank"); }
-					if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.rank.others")) { LanguageAPI.getLang(false).dispatchMessage(sender, "&a[\u2714] SignUtils.rank.others"); }
-					else { LanguageAPI.getLang(false).dispatchMessage(sender, "&c[\u2718] ItemJoin.get.others"); }
-					if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.reload")) { LanguageAPI.getLang(false).dispatchMessage(sender, "&a[\u2714] SignUtils.Reload"); } 
-					else { LanguageAPI.getLang(false).dispatchMessage(sender, "&c[\u2718] SignUtils.Reload"); }
-					if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.updates")) { LanguageAPI.getLang(false).dispatchMessage(sender, "&a[\u2714] SignUtils.Updates"); }
-					else { LanguageAPI.getLang(false).dispatchMessage(sender, "&c[\u2718] SignUtils.Updates"); }
-					if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.autoupdate")) { LanguageAPI.getLang(false).dispatchMessage(sender, "&a[\u2714] SignUtils.AutoUpdate"); }
-					else { LanguageAPI.getLang(false).dispatchMessage(sender, "&c[\u2718] SignUtils.AutoUpdate"); }
-					if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.permissions")) { LanguageAPI.getLang(false).dispatchMessage(sender, "&a[\u2714] SignUtils.permissions"); } 
-					else { LanguageAPI.getLang(false).dispatchMessage(sender, "&c[\u2718] SignUtils.permissions"); }
-					LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------&d&l[&5 Permissions Menu 1/1 &d&l]&d&l&m------------[");
-				} else if (sender instanceof ConsoleCommandSender) { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.notPlayer", sender); }
-			} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.noPermission", sender); }
-			return true;
-		} else if (args[0].equalsIgnoreCase("updates") || args[0].equalsIgnoreCase("update")) {
-			if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.updates")) {
-				LanguageAPI.getLang(false).sendLangMessage("Commands.Updates.checking", sender);
-				UpdateHandler.getUpdater(false).checkUpdates(sender, false);
-			} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.noPermission", sender); }
-			return true;
-		} else if (args[0].equalsIgnoreCase("AutoUpdate")) {
-			if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.autoupdate")) {
-				LanguageAPI.getLang(false).sendLangMessage("Commands.Updates.forcing", sender);
-				UpdateHandler.getUpdater(false).forceUpdates(sender);
-			} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.noPermission", sender); }
-			return true;
-		} else { LanguageAPI.getLang(false).sendLangMessage("Commands.Default.unknownCommand", sender); }
+		if (Execute.DEFAULT.accept(sender, args, 0)) {
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&5SignUtils v" + SignUtils.getInstance().getDescription().getVersion() + "&d by RockinChaos");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&5Type &l/SignUtils Help &5for the help menu.");
+		} else if (Execute.HELP.accept(sender, args, 1)) {
+			LanguageAPI.getLang(false).dispatchMessage(sender, "");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&dSignUtils v" + SignUtils.getInstance().getDescription().getVersion() + "&d by RockinChaos");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Help &7- &dThis help menu.");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Reload &7- &dReloads the .yml files.");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Updates &7- &dChecks for plugin updates.");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Upgrade &7- &dUpdates to latest version.");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&dType &d&l/SignUtils Help 2 &dfor the next page.");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]----------------&d&l[&5 Help Menu 1/2 &d&l]&d&l&m---------------[");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "");
+		} else if (Execute.HELP.accept(sender, args, 2)) {
+			LanguageAPI.getLang(false).dispatchMessage(sender, "");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Permissions &7- &dLists the permissions you have.");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank &7- &dYour involved player group(s).");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank <Player> &7- &dTheir involved player group(s).");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&dFound a bug? Report it @");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&dhttps://github.com/RockinChaos/SignUtils/issues");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]----------------&d&l[&5 Help Menu 2/2 &d&l]&d&l&m---------------[");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "");
+		} else if (Execute.RELOAD.accept(sender, args, 0)) {
+			ConfigHandler.getConfig().reloadConfigs(false);
+			LanguageAPI.getLang(false).sendLangMessage("commands.default.configReload", sender);
+		} else if (Execute.RANK.accept(sender, args, 0)) {
+			this.rank(sender, args);
+		} else if (Execute.PERMISSIONS.accept(sender, args, 1)) {
+			this.permissions(sender);
+		} else if (Execute.UPDATE.accept(sender, args, 0)) {
+			LanguageAPI.getLang(false).sendLangMessage("commands.updates.checkRequest", sender);
+			SchedulerUtils.runAsync(() -> {
+				UpdateHandler.getUpdater(false).checkUpdates(sender, false); 
+			});
+		} else if (Execute.UPGRADE.accept(sender, args, 0)) {
+			LanguageAPI.getLang(false).sendLangMessage("commands.updates.updateRequest", sender);
+			SchedulerUtils.runAsync(() -> {
+				UpdateHandler.getUpdater(false).forceUpdates(sender); 
+			});
+		} else if (this.matchExecutor(args) == null) {
+			LanguageAPI.getLang(false).sendLangMessage("commands.default.unknownCommand", sender);
+		} else if (!this.matchExecutor(args).playerRequired(sender, args)) {
+			LanguageAPI.getLang(false).sendLangMessage("commands.default.noPlayer", sender);
+			Execute executor = this.matchExecutor(args);
+			if (executor.equals(Execute.RANK))            { LanguageAPI.getLang(false).sendLangMessage("commands.get.usageSyntax", sender); } 
+		} else if (!this.matchExecutor(args).hasSyntax(args, 0)) {
+			Execute executor = this.matchExecutor(args);
+			if (executor.equals(Execute.RANK))               { LanguageAPI.getLang(false).sendLangMessage("commands.get.badSyntax", sender); } 
+		} else if (!this.matchExecutor(args).hasPermission(sender, args)) {
+			LanguageAPI.getLang(false).sendLangMessage("commands.default.noPermission", sender);
+		}
 		return true;
+	}
+	
+   /**
+	* Called when the CommandSender fails to execute a command.
+	* @param args - Passed command arguments.
+	* @return The found Executor.
+	* 
+	*/
+	private Execute matchExecutor(final String[] args) {
+		for (Execute command : Execute.values()) {
+			if (command.acceptArgs(args)) {
+				return command;
+			}
+		}
+		return null;
+	}
+	
+   /**
+	* Called when the CommandSender executes the Permisisons command.
+	* @param sender - Source of the command.
+    * @param args - The arguments.
+	* 
+	*/
+	private void rank(final CommandSender sender, String[] args) {
+		if (args.length == 2) {
+			Ranks.signRank(sender, args[1]);
+		} else if (sender instanceof Player) {
+			Ranks.signRank(sender, null);
+		}
+	}
+	
+   /**
+	* Called when the CommandSender executes the Permisisons command.
+	* @param sender - Source of the command.
+	* 
+	*/
+	private void permissions(final CommandSender sender) {
+		LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
+		LanguageAPI.getLang(false).dispatchMessage(sender, (PermissionsHandler.hasPermission(sender, "signutils.*") ? "&a[\u2714]" : "&c[\u2718]") + " SignUtils.*");
+		LanguageAPI.getLang(false).dispatchMessage(sender, (PermissionsHandler.hasPermission(sender, "signutils.all") ? "&a[\u2714]" : "&c[\u2718]") + " SignUtils.All");
+		LanguageAPI.getLang(false).dispatchMessage(sender, (PermissionsHandler.hasPermission(sender, "signutils.use") ? "&a[\u2714]" : "&c[\u2718]") + " SignUtils.Use");
+		LanguageAPI.getLang(false).dispatchMessage(sender, (PermissionsHandler.hasPermission(sender, "signutils.reload") ? "&a[\u2714]" : "&c[\u2718]") + " SignUtils.Reload");
+		LanguageAPI.getLang(false).dispatchMessage(sender, (PermissionsHandler.hasPermission(sender, "signutils.updates") ? "&a[\u2714]" : "&c[\u2718]") + " SignUtils.Updates");
+		LanguageAPI.getLang(false).dispatchMessage(sender, (PermissionsHandler.hasPermission(sender, "signutils.upgrade") ? "&a[\u2714]" : "&c[\u2718]") + " SignUtils.Upgrade");
+		LanguageAPI.getLang(false).dispatchMessage(sender, (PermissionsHandler.hasPermission(sender, "signutils.permissions") ? "&a[\u2714]" : "&c[\u2718]") + " SignUtils.Permissions");
+		LanguageAPI.getLang(false).dispatchMessage(sender, (PermissionsHandler.hasPermission(sender, "signutils.rank") ? "&a[\u2714]" : "&c[\u2718]") + " SignUtils.Rank");
+		LanguageAPI.getLang(false).dispatchMessage(sender, (PermissionsHandler.hasPermission(sender, "signutils.rank.others") ? "&a[\u2714]" : "&c[\u2718]") + " SignUtils.Rank.Others");
+		LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------&d&l[&5 Permissions Menu 1/1 &d&l]&d&l&m-----------[");
+	}
+	
+   /**
+	* Defines the config Command type for the command.
+	* 
+	*/
+	public enum Execute {
+		DEFAULT("", "signutils.use", false),
+		HELP("help", "signutils.use", false),
+		RELOAD("rl, reload", "signutils.reload", false),
+		PERMISSIONS("permission, permissions", "signutils.permissions", true),
+		RANK("rank, ranks", "signutils.rank, signutils.rank.others", true),
+		UPDATE("update, updates", "signutils.updates", false),
+		UPGRADE("upgrade", "signutils.upgrade", false);
+		private final String command;
+		private final String permission;
+		private final boolean player;
+		
+       /**
+	    * Creates a new Execute instance.
+	    * @param command - The expected command argument. 
+	    * @param permission - The expected command permission requirement.
+	    * @param player - If the command is specific to a player instance, cannot be executed by console.
+	    * 
+	    */
+		private Execute(final String command, final String permission, final boolean player) { 
+			this.command = command; this.permission = permission; this.player = player; 
+		}
+		
+       /**
+	    * Called when the CommandSender executes a command.
+	    * @param sender - Source of the command. 
+	    * @param args - Passed command arguments.
+	    * @param page - The page number to be expected.
+	    * 
+	    */
+		public boolean accept(final CommandSender sender, final String[] args, final int page) {
+			return (args.length == 0 || (StringUtils.splitIgnoreCase(this.command, args[0], ",") 
+			  && this.hasSyntax(args, page)))
+			  && this.playerRequired(sender, args)
+			  && this.hasPermission(sender, args); 
+		}
+		
+       /**
+	    * Checks if the executed command is the same as the executor.
+	    * @param sender - Source of the command. 
+	    * @param args - Passed command arguments.
+	    * @param page - The page number to be expected.
+	    * 
+	    */
+		public boolean acceptArgs(final String[] args) {
+			return StringUtils.splitIgnoreCase(this.command, args[0], ",");
+		}
+		
+       /**
+	    * Checks if the Command being executed has the proper formatting or syntax.
+	    * @param args - Passed command arguments.
+	    * @param page - The page number to be expected.
+	    * 
+	    */
+		private boolean hasSyntax(final String[] args, final int page) {
+			return ((args.length >= 2 && args[1].equalsIgnoreCase(String.valueOf(page))) || !(args.length >= 2) || this.equals(Execute.RANK));
+		}
+		
+       /**
+	    * Checks if the Player has permission to execute the Command.
+	    * @param sender - Source of the command. 
+	    * @param args - Passed command arguments.
+	    * 
+	    */
+		public boolean hasPermission(final CommandSender sender, final String[] args) {
+			String[] permissions = this.permission.replace(" ", "").split(",");
+			boolean multiPerms = this.permission.contains(",");
+			return (multiPerms && (this.equals(Execute.RANK) && ((args.length == 1 && PermissionsHandler.hasPermission(sender, permissions[0])) || (args.length >= 2 && PermissionsHandler.hasPermission(sender, permissions[1]))))
+		       || (!multiPerms && PermissionsHandler.hasPermission(sender, this.permission)));
+		}
+		
+       /**
+	    * Checks if the Command requires the instance to be a Player.
+	    * @param sender - Source of the command. 
+	    * @param args - Passed command arguments.
+	    * 
+	    */
+		public boolean playerRequired(final CommandSender sender, final String[] args) {
+			return (!this.player || (!(sender instanceof ConsoleCommandSender)) 
+				 || (this.equals(Execute.RANK) && args.length == 2));
+		}
 	}
 }

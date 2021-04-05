@@ -21,7 +21,7 @@ permissions:
           signutils.use: true
           signutils.reload: true
           signutils.updates: true
-          signutils.autoupdate: true
+          signutils.upgrade: true
           signutils.rank: true
           signutils.rank.others: true
           signutils.create: true
@@ -40,7 +40,7 @@ permissions:
    signutils.updates:
       description: Allows the use of the updates command.
       default: false
-   signutils.autoupdate:
+   signutils.upgrade:
       description: Allows the use of the autoupdate command.
       default: false
    signutils.create:

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.RockinChaos.signutils.utils;
+package me.RockinChaos.signutils.utils.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -44,7 +44,7 @@ import java.util.zip.GZIPOutputStream;
 * bStats Metrics Collection
 * Collects some data for plugin authors.
 */
-public class Metrics {
+public class MetricsAPI {
     public static final int B_STATS_VERSION = 1;
     private static final String URL = "https://bStats.org/submitData/bukkit";
     private boolean enabled;
@@ -54,20 +54,18 @@ public class Metrics {
     private static String serverUUID;
     private final Plugin plugin;
     private final List<CustomChart> charts = new ArrayList<>();
-    
-    private static Metrics metrics;
 
    /**
     * Class constructor.
     *
     * @param plugin The plugin which stats should be submitted.
     */
-    public Metrics() {
+    public MetricsAPI() {
 	        if (SignUtils.getInstance() == null) {
 	            throw new IllegalArgumentException("Plugin cannot be null!");
 	        }
 	        this.plugin = SignUtils.getInstance();
-			if (ConfigHandler.getConfig(false).getFile("config.yml").getBoolean("General.Metrics-Logging")) { 
+			if (ConfigHandler.getConfig().getFile("config.yml").getBoolean("General.Metrics-Logging")) { 
 	        File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
 	        File configFile = new File(bStatsFolder, "config.yml");
 	        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
@@ -103,15 +101,15 @@ public class Metrics {
 	                    break;
 	                } catch (NoSuchFieldException ignored) { }
 	            }
-	            Bukkit.getServicesManager().register(Metrics.class, this, plugin, ServicePriority.Normal);
+	            Bukkit.getServicesManager().register(MetricsAPI.class, this, plugin, ServicePriority.Normal);
 	            if (!found) {
 	                startSubmitting();
 	            }
 	        }
-	        this.addCustomChart(new Metrics.SimplePie("language", LanguageAPI.getLang(false).getLanguage()));
-	        this.addCustomChart(new Metrics.SimplePie("softDepend", DependAPI.getDepends(false).placeHolderEnabled() ? "PlaceholderAPI" : ""));
-	        this.addCustomChart(new Metrics.SimplePie("softDepend", DependAPI.getDepends(false).nickEnabled() ? "BetterNick" : ""));
-	        this.addCustomChart(new Metrics.SimplePie("softDepend", DependAPI.getDepends(false).getVault().vaultEnabled() ? "Vault" : ""));
+	        this.addCustomChart(new MetricsAPI.SimplePie("language", LanguageAPI.getLang(false).getLanguage()));
+	        this.addCustomChart(new MetricsAPI.SimplePie("softDepend", DependAPI.getDepends(false).placeHolderEnabled() ? "PlaceholderAPI" : ""));
+	        this.addCustomChart(new MetricsAPI.SimplePie("softDepend", DependAPI.getDepends(false).nickEnabled() ? "BetterNick" : ""));
+	        this.addCustomChart(new MetricsAPI.SimplePie("softDepend", DependAPI.getDepends(false).getVault().vaultEnabled() ? "Vault" : ""));
 		}
     }
 
@@ -639,15 +637,4 @@ public class Metrics {
             return data;
         }
     }
-	
-   /**
-    * Gets the instance of the Metrics.
-    * 
-    * @param regen - If the Metrics should have a new instance created.
-    * @return The Metrics instance.
-    */
-    public static Metrics getMetrics(final boolean regen) { 
-        if (metrics == null || regen) { metrics = new Metrics(); }
-        return metrics; 
-    } 
 }

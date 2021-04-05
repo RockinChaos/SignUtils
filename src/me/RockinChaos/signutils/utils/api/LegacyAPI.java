@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.RockinChaos.signutils.utils;
+package me.RockinChaos.signutils.utils.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -28,25 +28,13 @@ import org.bukkit.entity.Player;
  */
 public class LegacyAPI {
 	
-	private static LegacyAPI legacy;
-	
    /**
     * Gets the Bukkit Player from their String name.
     * 
     * @param playerName - The String name of the Bukkit Player.
     * @return The found Player.
     */
-	public Player getPlayer(final String playerName) {
+	public static Player getPlayer(final String playerName) {
 		return Bukkit.getPlayer(playerName);
 	}
-    
-   /**
-    * Gets the instance of the LegacyAPI.
-    * 
-    * @return The LegacyAPI instance.
-    */
-    public static LegacyAPI getLegacy() { 
-        if (legacy == null) { legacy = new LegacyAPI(); }
-        return legacy; 
-    }
 }

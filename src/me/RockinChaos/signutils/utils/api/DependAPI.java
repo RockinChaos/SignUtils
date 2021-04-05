@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.RockinChaos.signutils.utils;
+package me.RockinChaos.signutils.utils.api;
 
 import org.bukkit.Bukkit;
 
-import me.RockinChaos.signutils.handlers.ServerHandler;
+import me.RockinChaos.signutils.utils.ServerUtils;
 
 public class DependAPI {
 	private boolean placeHolderAPI = false;
@@ -88,7 +88,7 @@ public class DependAPI {
     */
 	public void sendUtilityDepends() {
 		String enabledPlugins = (this.nickEnabled() ? "BetterNick, " : "") + (this.placeHolderEnabled() ? "PlaceholderAPI, " : "") + (this.getVault().vaultEnabled() ? "Vault " : "");
-		if (!enabledPlugins.isEmpty()) { ServerHandler.getServer().logInfo("Hooked into { " + enabledPlugins + "}"); }
+		if (!enabledPlugins.isEmpty()) { ServerUtils.logInfo("Hooked into { " + enabledPlugins + "}"); }
 	}
 	
    /**

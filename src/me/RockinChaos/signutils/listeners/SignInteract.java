@@ -28,9 +28,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.RockinChaos.signutils.handlers.PermissionsHandler;
 import me.RockinChaos.signutils.signs.Ranks;
-import me.RockinChaos.signutils.utils.DependAPI;
-import me.RockinChaos.signutils.utils.LanguageAPI;
-import me.RockinChaos.signutils.utils.Utils;
+import me.RockinChaos.signutils.utils.StringUtils;
+import me.RockinChaos.signutils.utils.api.DependAPI;
+import me.RockinChaos.signutils.utils.api.EffectAPI;
+import me.RockinChaos.signutils.utils.api.LanguageAPI;
 
 public class SignInteract implements Listener {
 
@@ -42,10 +43,10 @@ public class SignInteract implements Listener {
 	@EventHandler
 	private void onSignClick(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Utils.getUtils().containsIgnoreCase(event.getClickedBlock().getType().name(), "SIGN")) {
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && StringUtils.containsIgnoreCase(event.getClickedBlock().getType().name(), "SIGN")) {
 			Sign sign = (Sign) event.getClickedBlock().getState();
-			if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Utils.getUtils().translateLayout(LanguageAPI.getLang(false).getLangMessage("Signs.Rank.signLine"), player)))) {
-				Ranks.getRank().signRank(player, null);
+			if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(StringUtils.translateLayout(LanguageAPI.getLang(false).getLangMessage("signs.rank.signLine"), player)))) {
+				Ranks.signRank(player, null);
 			}
 		}
 	}
@@ -58,18 +59,18 @@ public class SignInteract implements Listener {
 	@EventHandler
 	private void onSignPlace(SignChangeEvent event) {
 		Player player = event.getPlayer();
-		if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(Utils.getUtils().translateLayout(LanguageAPI.getLang(false).getLangMessage("Signs.Rank.signLine"), player)))) {
-			if (PermissionsHandler.getPermissions().hasPermission(player, "signutils.create") && DependAPI.getDepends(false).getVault().vaultError(player, true)) {
+		if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(StringUtils.translateLayout(LanguageAPI.getLang(false).getLangMessage("signs.rank.signLine"), player)))) {
+			if (PermissionsHandler.hasPermission(player, "signutils.create") && DependAPI.getDepends(false).getVault().vaultError(player, true)) {
 				if (this.setDefault(event.getLines())) { for (int i = 0; i < 4; i++) { event.setLine(i, this.defaultSignLines(player, event.getLines(), i)); } }
-				else { for (int i = 0; i < 4; i++) { event.setLine(i, Utils.getUtils().translateLayout(event.getLine(i), player)); } } 
-				Utils.getUtils().playEffect(event.getBlock(), "VILLAGER_HAPPY", "ENTITY_EXPERIENCE_ORB_PICKUP");
-				LanguageAPI.getLang(false).sendLangMessage("Signs.Default.signCreated", player);
+				else { for (int i = 0; i < 4; i++) { event.setLine(i, StringUtils.translateLayout(event.getLine(i), player)); } } 
+				EffectAPI.playEffect(event.getBlock(), "VILLAGER_HAPPY", "ENTITY_EXPERIENCE_ORB_PICKUP");
+				LanguageAPI.getLang(false).sendLangMessage("signs.default.signCreated", player);
 			} else if (!DependAPI.getDepends(false).getVault().vaultError(player, false)) {
-				Utils.getUtils().playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
+				EffectAPI.playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
 				event.setCancelled(true);
 			} else {
-				Utils.getUtils().playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
-				LanguageAPI.getLang(false).sendLangMessage("Signs.Default.noPermission", player);
+				EffectAPI.playEffect(event.getBlock(), "VILLAGER_ANGRY", "ENTITY_VILLAGER_HURT");
+				LanguageAPI.getLang(false).sendLangMessage("signs.default.noPermission", player);
 				event.setCancelled(true);
 			}
 		}
@@ -99,9 +100,9 @@ public class SignInteract implements Listener {
     */
 	private String defaultSignLines(Player player, String[] lines, int i) {
 		switch(i) {
-		   case 0 : return Utils.getUtils().translateLayout(lines[0], player);
-		   case 2 : return Utils.getUtils().translateLayout("Click to Display", player);
-		   case 3 : return Utils.getUtils().translateLayout("Your Groups", player);
+		   case 0 : return StringUtils.translateLayout(lines[0], player);
+		   case 2 : return StringUtils.translateLayout("Click to Display", player);
+		   case 3 : return StringUtils.translateLayout("Your Groups", player);
 		   default : return "";
 		}
 	}

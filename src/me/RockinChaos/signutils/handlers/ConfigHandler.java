@@ -30,10 +30,12 @@ import me.RockinChaos.signutils.ChatExecutor;
 import me.RockinChaos.signutils.SignUtils;
 import me.RockinChaos.signutils.ChatTab;
 import me.RockinChaos.signutils.listeners.SignInteract;
-import me.RockinChaos.signutils.utils.DependAPI;
-import me.RockinChaos.signutils.utils.LanguageAPI;
-import me.RockinChaos.signutils.utils.Metrics;
-import me.RockinChaos.signutils.utils.Utils;
+import me.RockinChaos.signutils.utils.SchedulerUtils;
+import me.RockinChaos.signutils.utils.ServerUtils;
+import me.RockinChaos.signutils.utils.StringUtils;
+import me.RockinChaos.signutils.utils.api.DependAPI;
+import me.RockinChaos.signutils.utils.api.LanguageAPI;
+import me.RockinChaos.signutils.utils.api.MetricsAPI;
 
 public class ConfigHandler {
 	
@@ -52,18 +54,32 @@ public class ConfigHandler {
 	    SignUtils.getInstance().getCommand("signutils").setExecutor(new ChatExecutor()); 
 	    SignUtils.getInstance().getCommand("signutils").setTabCompleter(new ChatTab());
 	    SignUtils.getInstance().getServer().getPluginManager().registerEvents(new SignInteract(), SignUtils.getInstance());
-	    DependAPI.getDepends(false).sendUtilityDepends();
+	}
+	
+   /**
+    * Copies files into memory.
+    * 
+    */
+	public void copyFiles() {
+		this.copyFile("config.yml", "config-Version", 1);
+		this.copyFile(LanguageAPI.getLang(true).getFile(), LanguageAPI.getLang(false).getFile().split("-")[0] + "-Version", 1);
 	}
 
    /**
     * Registers new instances of the plugin classes.
     * 
     */
-	public void registerClasses() {
-		this.copyFile("config.yml", "config-Version", 1);
-		this.copyFile(LanguageAPI.getLang(true).getFile(), LanguageAPI.getLang(false).getFile().split("-")[0] + "-Version", 1);
+	public void registerClasses(boolean silent) {
+		ServerUtils.clearErrorStatements();
+		this.copyFiles();
 		DependAPI.getDepends(true);
-		ServerHandler.getServer().runThread(main -> { Metrics.getMetrics(true); }, 100L);
+		if (!silent) { 
+			DependAPI.getDepends(false).sendUtilityDepends();
+		}
+		SchedulerUtils.runLater(100L, () -> {
+			new MetricsAPI();
+			ServerUtils.sendErrorStatements(null);
+		});
 	}
 	
    /**
@@ -78,8 +94,8 @@ public class ConfigHandler {
 		try {
 			return this.getLoadedConfig(file, false);
 		} catch (Exception e) {
-			ServerHandler.getServer().sendSevereTrace(e);
-			ServerHandler.getServer().logSevere("Cannot load " + file.getName() + " from disk!");
+			ServerUtils.sendSevereTrace(e);
+			ServerUtils.logSevere("Cannot load " + file.getName() + " from disk!");
 		}
 		return null;
 	}
@@ -101,8 +117,8 @@ public class ConfigHandler {
 				else { source = SignUtils.getInstance().getResource("files/locales/" + path); }
         		if (!file.exists()) { Files.copy(source, file.toPath(), new CopyOption[0]); }
 			} catch (Exception e) {
-				ServerHandler.getServer().sendSevereTrace(e);
-				ServerHandler.getServer().logWarn("Cannot save " + path + " to disk!");
+				ServerUtils.sendSevereTrace(e);
+				ServerUtils.logWarn("Cannot save " + path + " to disk!");
 				this.noSource.put(path, true);
 				return null;
 			}
@@ -112,8 +128,8 @@ public class ConfigHandler {
 			this.noSource.put(path, false);
 			return config;
 		} catch (Exception e) {
-			ServerHandler.getServer().sendSevereTrace(e);
-			ServerHandler.getServer().logSevere("Cannot load " + file.getName() + " from disk!");
+			ServerUtils.sendSevereTrace(e);
+			ServerUtils.logSevere("Cannot load " + file.getName() + " from disk!");
 			this.noSource.put(file.getName(), true);
 		}
 		return null;
@@ -155,24 +171,42 @@ public class ConfigHandler {
 			else { source = SignUtils.getInstance().getResource("files/locales/" + configFile); }
 			if (source != null) {
 				String[] namePart = configFile.split("\\.");
-				String renameFile = namePart[0] + "-old-" + Utils.getUtils().getRandom(1, 50000) + namePart[1];
+				String renameFile = namePart[0] + "-old-" + StringUtils.getRandom(1, 50000) + namePart[1];
 				File renamedFile = new File(SignUtils.getInstance().getDataFolder(), renameFile);
 				if (!renamedFile.exists()) {
 					File.renameTo(renamedFile);
 					File copyFile = new File(SignUtils.getInstance().getDataFolder(), configFile);
 					copyFile.delete();
 					this.getSource(configFile);
-					ServerHandler.getServer().logWarn("Your " + configFile + " is out of date and new options are available, generating a new one!");
+					ServerUtils.logWarn("Your " + configFile + " is out of date and new options are available, generating a new one!");
 				}
 			}
 		} else if (this.noSource.get(configFile)) {
-			ServerHandler.getServer().logSevere("Your " + configFile + " is not using proper YAML Syntax and will not be loaded!");
-			ServerHandler.getServer().logSevere("Check your YAML formatting by using a YAML-PARSER such as http://yaml-online-parser.appspot.com/");
+			ServerUtils.logSevere("Your " + configFile + " is not using proper YAML Syntax and will not be loaded!");
+			ServerUtils.logSevere("Check your YAML formatting by using a YAML-PARSER such as http://yaml-online-parser.appspot.com/");
 		}
 		if (!this.noSource.get(configFile)) { 
 			this.getFile(configFile).options().copyDefaults(false);
 			if (configFile.contains("lang.yml")) { LanguageAPI.getLang(false).setPrefix(); }
 		}
+	}
+	
+   /**
+    * Softly reloads the configuration files.
+    * Usefully when editing booleans.
+    * 
+    */
+	public void softReload() {
+		this.copyFiles();
+	}
+	
+   /**
+    * Properly reloads the configuration files.
+    * 
+    */
+	public void reloadConfigs(boolean silent) {
+		config = new ConfigHandler(); 
+        config.registerClasses(silent);
 	}
 	
    /**
@@ -187,13 +221,12 @@ public class ConfigHandler {
    /**
     * Gets the instance of the ConfigHandler.
     * 
-    * @param regen - If the instance should be regenerated.
     * @return The ConfigHandler instance.
     */
-    public static ConfigHandler getConfig(final boolean regen) { 
-        if (config == null || regen) {
+    public static ConfigHandler getConfig() { 
+        if (config == null) {
         	config = new ConfigHandler(); 
-        	config.registerClasses();
+        	config.registerClasses(false);
         }
         return config; 
     } 

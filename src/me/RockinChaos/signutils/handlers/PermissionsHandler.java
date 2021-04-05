@@ -23,8 +23,6 @@ import org.bukkit.entity.Player;
 
 public class PermissionsHandler {
 	
-	private static PermissionsHandler permissions;
-	
    /**
     * Checks if the sender has permission.
     * 
@@ -32,12 +30,12 @@ public class PermissionsHandler {
     * @param permission - The permission the sender is expected to have.
     * @return If the entity has the proper permission.
     */
-	public boolean hasPermission(final CommandSender sender, final String permission) {
+	public static boolean hasPermission(final CommandSender sender, final String permission) {
 		if (sender.hasPermission(permission) || sender.hasPermission("signutils.*") || sender.hasPermission("signutils.all") || isDeveloper(sender) || (sender instanceof ConsoleCommandSender)) {
 			return true;
-		} else if (!ConfigHandler.getConfig(false).getFile("config.yml").getBoolean("Permissions.Commands-OP") && sender.isOp()) {
+		} else if (!ConfigHandler.getConfig().getFile("config.yml").getBoolean("Permissions.Commands-OP") && sender.isOp()) {
 			if (permission.equalsIgnoreCase("signutils.use") || permission.equalsIgnoreCase("signutils.reload") || permission.equalsIgnoreCase("signutils.updates")
-					|| permission.equalsIgnoreCase("signutils.autoupdate") || permission.equalsIgnoreCase("signutils.create") || permission.equalsIgnoreCase("signutils.rank") 
+					|| permission.equalsIgnoreCase("signutils.upgrade") || permission.equalsIgnoreCase("signutils.create") || permission.equalsIgnoreCase("signutils.rank") 
 					|| permission.equalsIgnoreCase("signutils.rank.others") || isDeveloper(sender)) {
 				return true;
 			}
@@ -51,8 +49,8 @@ public class PermissionsHandler {
     * @param sender - The entity executing the plugin command.
     * @return If the command sender is the developer of the plugin.
     */
-	private boolean isDeveloper(final CommandSender sender) {
-		if (ConfigHandler.getConfig(false).debugEnabled()) {
+	private static boolean isDeveloper(final CommandSender sender) {
+		if (ConfigHandler.getConfig().debugEnabled()) {
 			if (sender instanceof Player) {
 				try { 
 					if (((Player)sender).getUniqueId().toString().equalsIgnoreCase("ad6e8c0e-6c47-4e7a-a23d-8a2266d7baee")) { return true; }
@@ -61,14 +59,4 @@ public class PermissionsHandler {
 		}
 		return false;
 	}
-	
-   /**
-    * Gets the instance of the PermissionsHandler.
-    * 
-    * @return The PermissionsHandler instance.
-    */
-    public static PermissionsHandler getPermissions() { 
-        if (permissions == null) { permissions = new PermissionsHandler(); }
-        return permissions; 
-    } 
 }

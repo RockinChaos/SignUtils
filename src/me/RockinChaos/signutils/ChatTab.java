@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import me.RockinChaos.signutils.handlers.PermissionsHandler;
-import me.RockinChaos.signutils.handlers.ServerHandler;
+import me.RockinChaos.signutils.utils.ServerUtils;
 
 public class ChatTab implements TabCompleter {
 	
@@ -48,9 +48,9 @@ public class ChatTab implements TabCompleter {
     	final List < String > commands = new ArrayList < > ();
     	Collection < ? > playersOnlineNew = null;
     	Player[] playersOnlineOld;
-    	if (args.length == 2 && args[0].equalsIgnoreCase("help") && PermissionsHandler.getPermissions().hasPermission(sender, "singutils.use")) {
+    	if (args.length == 2 && args[0].equalsIgnoreCase("help") && PermissionsHandler.hasPermission(sender, "singutils.use")) {
     		commands.add("2");
-    	} else if (args.length == 2 && args[0].equalsIgnoreCase("rank") && PermissionsHandler.getPermissions().hasPermission(sender, "signutils.rank.others")) {
+    	} else if (args.length == 2 && args[0].equalsIgnoreCase("rank") && PermissionsHandler.hasPermission(sender, "signutils.rank.others")) {
     		try {
     			if (Bukkit.class.getMethod("getOnlinePlayers", new Class < ? > [0]).getReturnType() == Collection.class) {
     				if (Bukkit.class.getMethod("getOnlinePlayers", new Class < ? > [0]).getReturnType() == Collection.class) {
@@ -66,15 +66,15 @@ public class ChatTab implements TabCompleter {
     				}
     			}
     		} catch (Exception e) {
-    			ServerHandler.getServer().sendDebugTrace(e);
+    			ServerUtils.sendDebugTrace(e);
     		}
     	} else if (args.length == 1) {
-    		if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.use")) { commands.add("help"); }
-    		if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.permissions")) { commands.add("permissions"); }
-    		if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.rank")) { commands.add("rank"); }
-    		if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.reload")) { commands.add("reload"); }
-    		if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.updates")) { commands.add("updates"); }
-    		if (PermissionsHandler.getPermissions().hasPermission(sender, "signutils.autoupdate")) { commands.add("autoupdate"); }
+    		if (PermissionsHandler.hasPermission(sender, "signutils.use")) { commands.add("help"); }
+    		if (PermissionsHandler.hasPermission(sender, "signutils.permissions")) { commands.add("permissions"); }
+    		if (PermissionsHandler.hasPermission(sender, "signutils.rank")) { commands.add("rank"); }
+    		if (PermissionsHandler.hasPermission(sender, "signutils.reload")) { commands.add("reload"); }
+    		if (PermissionsHandler.hasPermission(sender, "signutils.updates")) { commands.add("updates"); }
+    		if (PermissionsHandler.hasPermission(sender, "signutils.autoupdate")) { commands.add("autoupdate"); }
     	}
     	StringUtil.copyPartialMatches(args[(args.length - 1)], commands, completions);
     	Collections.sort(completions);

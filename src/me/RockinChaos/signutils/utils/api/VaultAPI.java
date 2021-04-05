@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package me.RockinChaos.signutils.utils;
+package me.RockinChaos.signutils.utils.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import me.RockinChaos.signutils.SignUtils;
-import me.RockinChaos.signutils.handlers.ServerHandler;
+import me.RockinChaos.signutils.utils.ServerUtils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -48,11 +48,11 @@ public class VaultAPI {
 	private void enableEconomy() { 
 		if (SignUtils.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
 			if (!this.setupEconomy()) {
-				ServerHandler.getServer().logDebug("{VaultAPI} An error has occured while setting up enabling Vault-ItemJoin support!");
+				ServerUtils.logDebug("{VaultAPI} An error has occured while setting up enabling Vault-ItemJoin support!");
 			}
 			if (!this.setupPermissions()) {
-				ServerHandler.getServer().logSevere("{VaultAPI} There was an issue setting up Vault Permissions!");
-				ServerHandler.getServer().logSevere("{VaultAPI} If this continues, please contact the plugin developer!");
+				ServerUtils.logSevere("{VaultAPI} There was an issue setting up Vault Permissions!");
+				ServerUtils.logSevere("{VaultAPI} If this continues, please contact the plugin developer!");
 				return;
 			}
 		}
