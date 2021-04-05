@@ -1,4 +1,4 @@
-![](https://i.imgur.com/zXs2ka8.png)
+![](https://i.imgur.com/WwaXYL7.png)
 
 <p align="center">
  See <a href="https://github.com/RockinChaos/SignUtils/wiki">SignUtils's Wiki</a> for the full detailed documentation on the plugin.<br>
