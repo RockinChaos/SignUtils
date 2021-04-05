@@ -10,12 +10,12 @@
 ### Description
 -----
 ```
-SignUtils was built with the idea of being a multi-purpose plugin and the layout is designed to where a utility 
-can be added to a sign as well as executed through a plugin command. A utility is to be defined as an action that 
-can be bound to an in-game sign which allows SignUtils to perform that action upon interacting with the sign. 
-The first example that this plugin was built around is determining the player's involved group(s) at the click 
-of a sign. This also gives the option to see their own group(s) using a command or you can see another player 
-group(s) by specifying their name.
+SignUtils was built with the idea of being a multi-purpose plugin and the layout is designed to where a 
+utility can be added to a sign as well as executed through a plugin command. A utility is to be defined 
+as an action that can be bound to an in-game sign which allows SignUtils to perform that action upon 
+interacting with the sign. The first example that this plugin was built around is determining the 
+player's involved group(s) at the click of a sign. This also gives the option to see their own group(s) 
+using a command or you can see another player group(s) by specifying their name.
 ```
 -----
 ### Installation
