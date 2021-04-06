@@ -107,9 +107,9 @@ public class SchedulerUtils {
     				public void run() {
     					runnable.run(); {
     						SINGLE_THREAD_TRANSACTING = false;
-    						}
     					}
-    				}.runTaskAsynchronously(SignUtils.getInstance());
+    				}
+    			}.runTaskAsynchronously(SignUtils.getInstance());
     		} else {
     			try {
     				Thread.sleep(500);
