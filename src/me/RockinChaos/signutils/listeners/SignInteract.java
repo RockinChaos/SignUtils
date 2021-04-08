@@ -17,7 +17,6 @@
  */
 package me.RockinChaos.signutils.listeners;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,11 +41,14 @@ public class SignInteract implements Listener {
 	*/
 	@EventHandler
 	private void onSignClick(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && StringUtils.containsIgnoreCase(event.getClickedBlock().getType().name(), "SIGN")) {
-			Sign sign = (Sign) event.getClickedBlock().getState();
-			if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(StringUtils.translateLayout(LanguageAPI.getLang(false).getLangMessage("signs.rank.signLine"), player)))) {
+			final Sign sign = (Sign) event.getClickedBlock().getState();
+			final String lineZero = sign.getLine(0);
+			if (Ranks.isRankSign(lineZero, player)) {
 				Ranks.signRank(player, null);
+			} else {
+				// another future sign...
 			}
 		}
 	}
@@ -58,10 +60,19 @@ public class SignInteract implements Listener {
 	*/
 	@EventHandler
 	private void onSignPlace(SignChangeEvent event) {
-		Player player = event.getPlayer();
-		if (ChatColor.stripColor(event.getLine(0)).equalsIgnoreCase(ChatColor.stripColor(StringUtils.translateLayout(LanguageAPI.getLang(false).getLangMessage("signs.rank.signLine"), player)))) {
+		final Player player = event.getPlayer();
+		final String lineZero = event.getLine(0);
+		if (this.isCustomSign(lineZero, player)) {
 			if (PermissionsHandler.hasPermission(player, "signutils.create") && DependAPI.getDepends(false).getVault().vaultError(player, true)) {
-				if (this.setDefault(event.getLines())) { for (int i = 0; i < 4; i++) { event.setLine(i, this.defaultSignLines(player, event.getLines(), i)); } }
+				if (this.setDefault(event.getLines())) { 
+					for (int i = 0; i < 4; i++) { 
+						if (Ranks.isRankSign(lineZero, player)) {
+							event.setLine(i, Ranks.setDefault(player, event.getLines(), i)); 
+						} else {
+							// another future sign...
+						}
+					} 
+				}
 				else { for (int i = 0; i < 4; i++) { event.setLine(i, StringUtils.translateLayout(event.getLine(i), player)); } } 
 				EffectAPI.playEffect(event.getBlock(), "VILLAGER_HAPPY", "ENTITY_EXPERIENCE_ORB_PICKUP");
 				LanguageAPI.getLang(false).sendLangMessage("signs.default.signCreated", player);
@@ -77,33 +88,27 @@ public class SignInteract implements Listener {
 	}
 	
    /**
+    * Checks if the Sign is a Custom Sign.
+    * 
+    * @param str - The Sign Line to be checked.
+    * @param player - The Player that interacted with the Sign.
+    * @return If the sign is a Custom Sign.
+    */
+	private boolean isCustomSign(final String str, final Player player) {
+		return Ranks.isRankSign(str, player); // || OtherSign.isOtherSign(str, player);
+	}
+	
+   /**
     * Checks if the default sign lines should be used.
     * 
     * @param lines - The defined sign lines.
     * @return If the default sign lines should be used.
     */
-	private boolean setDefault(String[] lines) {
+	private boolean setDefault(final String[] lines) {
 		for (int i = 1; i < 4; i++) {
-			String signLine = lines[i];
+			final String signLine = lines[i];
 			if (!signLine.isEmpty()) { return false; }
 		}
 		return true;
-	}
-	
-   /**
-    * Attempts to get the specified sign line.
-    * 
-    * @param player - The Player that interacted with the sign.
-    * @param lines - The defined sign lines.
-    * @param i - The sign line to be fetched.
-    * @return The located sign line.
-    */
-	private String defaultSignLines(Player player, String[] lines, int i) {
-		switch(i) {
-		   case 0 : return StringUtils.translateLayout(lines[0], player);
-		   case 2 : return StringUtils.translateLayout("Click to Display", player);
-		   case 3 : return StringUtils.translateLayout("Your Groups", player);
-		   default : return "";
-		}
 	}
 }

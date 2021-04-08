@@ -17,10 +17,12 @@
  */
 package me.RockinChaos.signutils.signs;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.RockinChaos.signutils.handlers.PlayerHandler;
+import me.RockinChaos.signutils.utils.StringUtils;
 import me.RockinChaos.signutils.utils.api.DependAPI;
 import me.RockinChaos.signutils.utils.api.LanguageAPI;
 import net.milkbowl.vault.permission.Permission;
@@ -33,7 +35,7 @@ public class Ranks {
     * @param playerName - The player to have their rank checked.
     * @param otherPlayer - The other player to have their rank checked.
     */
-	public static void signRank(CommandSender sender, String otherPlayer) {
+	public static void signRank(final CommandSender sender, final String otherPlayer) {
 		if (DependAPI.getDepends(false).getVault().vaultError(sender, true)) {
 			if (otherPlayer != null && !otherPlayer.isEmpty() && PlayerHandler.getPlayerString(otherPlayer) == null) {
 				String[] placeHolders = LanguageAPI.getLang(false).newString();
@@ -62,6 +64,34 @@ public class Ranks {
 					}
 				}
 			}
+		}
+	}
+	
+   /**
+    * Checks if the Sign is a Rank Sign.
+    * 
+    * @param str - The Sign Line to be checked.
+    * @param player - The Player that interacted with the Sign.
+    * @return If the sign is a Rank Sign.
+    */
+	public static boolean isRankSign(final String str, final Player player) {
+		return ChatColor.stripColor(str).equalsIgnoreCase(ChatColor.stripColor(StringUtils.translateLayout(LanguageAPI.getLang(false).getLangMessage("signs.rank.signLine"), player)));
+	}
+	
+   /**
+    * Attempts to get the specified sign line.
+    * 
+    * @param player - The Player that interacted with the sign.
+    * @param lines - The defined sign lines.
+    * @param i - The sign line to be fetched.
+    * @return The located sign line.
+    */
+	public static String setDefault(final Player player, final String[] lines, final int i) {
+		switch(i) {
+		   case 0 : return StringUtils.translateLayout(lines[0], player);
+		   case 2 : return StringUtils.translateLayout("Click to Display", player);
+		   case 3 : return StringUtils.translateLayout("Your Groups", player);
+		   default : return "";
 		}
 	}
 }
