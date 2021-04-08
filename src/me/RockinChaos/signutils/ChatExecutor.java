@@ -117,7 +117,7 @@ public class ChatExecutor implements CommandExecutor {
     * @param args - The arguments.
 	* 
 	*/
-	private void rank(final CommandSender sender, String[] args) {
+	private void rank(final CommandSender sender, final String[] args) {
 		if (args.length == 2) {
 			Ranks.signRank(sender, args[1]);
 		} else if (sender instanceof Player) {

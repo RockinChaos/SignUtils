@@ -239,7 +239,7 @@ public class UpdateHandler {
     * @param regen - If the instance should be regenerated.
     * @return The UpdateHandler instance.
     */
-    public static UpdateHandler getUpdater(boolean regen) { 
+    public static UpdateHandler getUpdater(final boolean regen) { 
         if (updater == null || regen) { updater = new UpdateHandler(); }
         return updater; 
     } 

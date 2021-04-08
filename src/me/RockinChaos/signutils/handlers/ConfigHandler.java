@@ -69,7 +69,7 @@ public class ConfigHandler {
     * Registers new instances of the plugin classes.
     * 
     */
-	public void registerClasses(boolean silent) {
+	public void registerClasses(final boolean silent) {
 		ServerUtils.clearErrorStatements();
 		this.copyFiles();
 		DependAPI.getDepends(true);
@@ -77,7 +77,7 @@ public class ConfigHandler {
 			DependAPI.getDepends(false).sendUtilityDepends();
 		}
 		SchedulerUtils.runLater(100L, () -> {
-			new MetricsAPI();
+			new MetricsAPI(SignUtils.getInstance(), 4278);
 			ServerUtils.sendErrorStatements(null);
 		});
 	}
@@ -204,7 +204,7 @@ public class ConfigHandler {
     * Properly reloads the configuration files.
     * 
     */
-	public void reloadConfigs(boolean silent) {
+	public void reloadConfigs(final boolean silent) {
 		config = new ConfigHandler(); 
         config.registerClasses(silent);
 	}

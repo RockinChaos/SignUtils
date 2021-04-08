@@ -33,7 +33,7 @@ public class EffectAPI {
     * @param sParticle - The String name of the Particle.
     * @param sSound - The String name of the Sound.
     */
-	public static void playEffect(Block block, String sParticle, String sSound) {
+	public static void playEffect(final Block block, final String sParticle, final String sSound) {
 		if (ServerUtils.hasSpecificUpdate("1_9")) {
 			org.bukkit.Particle particle = org.bukkit.Particle.valueOf(sParticle);
 			Sound sound = Sound.valueOf(sSound);
