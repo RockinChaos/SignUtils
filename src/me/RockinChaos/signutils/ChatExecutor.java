@@ -20,6 +20,7 @@ package me.RockinChaos.signutils;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
+import me.RockinChaos.signutils.ChatComponent.ClickAction;
 import me.RockinChaos.signutils.handlers.ConfigHandler;
 import me.RockinChaos.signutils.handlers.PermissionsHandler;
 import me.RockinChaos.signutils.handlers.UpdateHandler;
@@ -41,27 +42,27 @@ public class ChatExecutor implements CommandExecutor {
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		if (Execute.DEFAULT.accept(sender, args, 0)) {
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&5SignUtils v" + SignUtils.getInstance().getDescription().getVersion() + "&d by RockinChaos");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&5Type &l/SignUtils Help &5for the help menu.");
+			LanguageAPI.getLang(false).dispatchMessage(sender, ("&5SignUtils v" + SignUtils.getInstance().getDescription().getVersion() + "&d by RockinChaos"), "&bThis should be the version submitted to the developer \n&bwhen submitting a bug or feature request.", "https://github.com/RockinChaos/SignUtils/issues", ClickAction.OPEN_URL);
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&5Type &l/SignUtils Help &5for the help menu.", "&eClick to View the Help Menu.", "/signutils help", ClickAction.RUN_COMMAND);
 		} else if (Execute.HELP.accept(sender, args, 1)) {
 			LanguageAPI.getLang(false).dispatchMessage(sender, "");
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&dSignUtils v" + SignUtils.getInstance().getDescription().getVersion() + "&d by RockinChaos");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Help &7- &dThis help menu.");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Reload &7- &dReloads the .yml files.");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Updates &7- &dChecks for plugin updates.");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Upgrade &7- &dUpdates to latest version.");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&dType &d&l/SignUtils Help 2 &dfor the next page.");
+			LanguageAPI.getLang(false).dispatchMessage(sender, ("&5SignUtils v" + SignUtils.getInstance().getDescription().getVersion() + "&d by RockinChaos"), "&bThis should be the version submitted to the developer \n&bwhen submitting a bug or feature request.", "https://github.com/RockinChaos/SignUtils/issues", ClickAction.OPEN_URL);
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Help &7- &dThis help menu.", "&aExecuting this command shows this help menu!", "/signutils help", ClickAction.SUGGEST_COMMAND);
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Reload &7- &dReloads the .yml files.", "&aFully reloads the plugin, fetching \n&aany changes made to the .yml files. \n\n&aBe sure to save changes made to your .yml files!", "/signutils reload", ClickAction.SUGGEST_COMMAND);
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Updates &7- &dChecks for plugin updates.", "&aChecks to see if there are any updates available for this plugin.", "/signutils updates", ClickAction.SUGGEST_COMMAND);
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Upgrade &7- &dUpdates to latest version.", "&aAttempts to Upgrade this plugin to the latest version. \n&aYou will need to restart the server for this process to complete.", "/signutils upgrade", ClickAction.SUGGEST_COMMAND);
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&dType &d&l/SignUtils Help 2 &dfor the next page.", "&eClick to View the Next Page.", "/signutils help 2", ClickAction.RUN_COMMAND);
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]----------------&d&l[&5 Help Menu 1/2 &d&l]&d&l&m---------------[");
 			LanguageAPI.getLang(false).dispatchMessage(sender, "");
 		} else if (Execute.HELP.accept(sender, args, 2)) {
 			LanguageAPI.getLang(false).dispatchMessage(sender, "");
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Permissions &7- &dLists the permissions you have.");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank &7- &dYour involved player group(s).");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank <Player> &7- &dTheir involved player group(s).");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Permissions &7- &dLists the permissions you have.", "&aLists the Permissions for your Player. \n\n&aGreen &bmeans you have permission whereas \n&cRed &bmeans you do not have permission.", "/signutils permissions", ClickAction.SUGGEST_COMMAND);
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank &7- &dYour involved player group(s).", "&aLists the Group(s) your Player is involved in.", "/signutils rank", ClickAction.SUGGEST_COMMAND);
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank <Player> &7- &dTheir involved player group(s).", "&aLists the Group(s) the specified Player is involved in.", "/signutils rank ", ClickAction.SUGGEST_COMMAND);
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&dFound a bug? Report it @");
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&dhttps://github.com/RockinChaos/SignUtils/issues");
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&dhttps://github.com/RockinChaos/SignUtils/issues", "&eClick to Submit a Bug or Feature Request.", "https://github.com/RockinChaos/SignUtils/issues", ClickAction.OPEN_URL);
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]----------------&d&l[&5 Help Menu 2/2 &d&l]&d&l&m---------------[");
 			LanguageAPI.getLang(false).dispatchMessage(sender, "");
 		} else if (Execute.RELOAD.accept(sender, args, 0)) {
