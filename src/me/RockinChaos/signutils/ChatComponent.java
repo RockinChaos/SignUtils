@@ -1,8 +1,26 @@
+/*
+ * SignUtils
+ * Copyright (C) CraftationGaming <https://www.craftationgaming.com/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.RockinChaos.signutils;
 
 import com.google.gson.JsonObject;
 
 import me.RockinChaos.signutils.utils.ReflectionUtils;
+import me.RockinChaos.signutils.utils.ReflectionUtils.MinecraftMethod;
 import me.RockinChaos.signutils.utils.ServerUtils;
 
 import org.bukkit.ChatColor;
@@ -39,19 +57,20 @@ public abstract class ChatComponent {
             Class<?> baseComponent = ReflectionUtils.getMinecraftClass("IChatBaseComponent");
             Class<?> serializer = ReflectionUtils.getMinecraftClass("IChatBaseComponent$ChatSerializer");
             Class<?> chatPacket = ReflectionUtils.getMinecraftClass("PacketPlayOutChat");
+            Class<?> packetClass = ReflectionUtils.getMinecraftClass("Packet");
             Object component = serializer.getDeclaredMethod("a", String.class).invoke(null, text.toString());
             
             if (ServerUtils.hasSpecificUpdate("1_16")) {
             	Constructor<?> packet = chatPacket.getConstructor(baseComponent, ReflectionUtils.getMinecraftClass("ChatMessageType"), player.getUniqueId().getClass());
             	try {
             		Class<?> chatMessage = ReflectionUtils.getMinecraftClass("ChatMessageType");
-            		connection.getClass().getMethod("sendPacket", ReflectionUtils.getMinecraftClass("Packet")).invoke(connection, packet.newInstance(component, chatMessage.getMethod("a", byte.class).invoke(null, (byte)0), player.getUniqueId()));
+            		connection.getClass().getMethod(MinecraftMethod.sendPacket.getMethod(connection, packetClass), packetClass).invoke(connection, packet.newInstance(component, chatMessage.getMethod("a", byte.class).invoke(null, (byte)0), player.getUniqueId()));
             	} catch (Exception e) {
             		ServerUtils.sendSevereTrace(e);
             	}
             } else {
             	Constructor<?> packet = chatPacket.getConstructor(baseComponent);
-            	connection.getClass().getMethod("sendPacket", ReflectionUtils.getMinecraftClass("Packet")).invoke(connection, packet.newInstance(component));
+            	connection.getClass().getMethod(MinecraftMethod.sendPacket.getMethod(connection, packetClass), packetClass).invoke(connection, packet.newInstance(component));
             }
         } catch (Exception e) {
         	ServerUtils.sendSevereTrace(e);

@@ -1,5 +1,5 @@
 /*
- * ItemJoin
+ * SignUtils
  * Copyright (C) CraftationGaming <https://www.craftationgaming.com/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ public final class ReflectionUtils {
 	private static String MC_PREFIX = "net.minecraft";
 	private static String VERSION = OBC_PREFIX.replace("org.bukkit.craftbukkit", "").replace(".", "");
 	private static Pattern MATCH_VARIABLE = Pattern.compile("\\{([^\\}]+)\\}");
-	private static boolean NO_REFLECTIONS = (Integer.parseInt(VERSION.replace("_", "").replace("R0", "").replace("R1", "").replace("R2", "").replace("R3", "").replace("R4", "").replace("R5", "").replaceAll("[a-z]", "")) >= 117);
+	private static boolean MC_REMAPPED = (Integer.parseInt(VERSION.replace("_", "").replace("R0", "").replace("R1", "").replace("R2", "").replace("R3", "").replace("R4", "").replace("R5", "").replaceAll("[a-z]", "")) >= 117);
 	
    /**
 	* An interface for invoking a specific constructor.
@@ -348,8 +348,12 @@ public final class ReflectionUtils {
 	* @throws IllegalArgumentException If the class doesn't exist.
 	*/
 	public static Class<?> getMinecraftClass(final String name) {
-		if (NO_REFLECTIONS) {
-			return getMinecraftTag(name);
+		if (MC_REMAPPED) {
+			try {
+				return getMinecraftTag(name);
+			} catch (Exception e) {
+				return getCanonicalClass(NMS_PREFIX + "." + name); 
+			}
 		} else { 
 			return getCanonicalClass(NMS_PREFIX + "." + name); 
 		}
@@ -399,7 +403,16 @@ public final class ReflectionUtils {
 	public static void sendPacketPlayOutSetSlot(Player player, ItemStack item, int index) throws Exception {
 		Class < ? > itemStack = getMinecraftClass("ItemStack");
 		Object nms = getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
-		Object packet = getMinecraftClass("PacketPlayOutSetSlot").getConstructor(int.class, int.class, itemStack).newInstance(0, index, itemStack.cast(nms));
+		Object packet = null;
+		if (MC_REMAPPED) {
+			try {
+				packet = getMinecraftClass("PacketPlayOutSetSlot").getConstructor(int.class, int.class, int.class, itemStack).newInstance(0, 0, index, itemStack.cast(nms));
+			} catch (NoSuchMethodException e) {
+				packet = getMinecraftClass("PacketPlayOutSetSlot").getConstructor(int.class, int.class, itemStack).newInstance(0, index, itemStack.cast(nms));
+			}
+		} else {
+			packet = getMinecraftClass("PacketPlayOutSetSlot").getConstructor(int.class, int.class, itemStack).newInstance(0, index, itemStack.cast(nms));
+		}
 		sendPacket(player, packet);
 	}
 	
@@ -411,8 +424,9 @@ public final class ReflectionUtils {
 	*/
 	public static void sendPacket(final Player player, final Object packet) throws Exception {
 	    Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
-	    Object playerHandle = nmsPlayer.getClass().getField((NO_REFLECTIONS ? "b" : "playerConnection")).get(nmsPlayer);
-	    playerHandle.getClass().getMethod("sendPacket", getMinecraftClass("Packet")).invoke(playerHandle, packet);
+	    Object playerHandle = nmsPlayer.getClass().getField(MinecraftField.PlayerConnection.getField(nmsPlayer.getClass())).get(nmsPlayer);
+	    Class<?> packetClass = getMinecraftClass("Packet");
+	    playerHandle.getClass().getMethod(MinecraftMethod.sendPacket.getMethod(playerHandle.getClass(), packetClass), packetClass).invoke(playerHandle, packet);
 	}
 
    /**
@@ -428,8 +442,17 @@ public final class ReflectionUtils {
 			String variable = matcher.group(1);
 			String replacement = "";
 			if ("nms".equalsIgnoreCase(variable)) {
-				if (NO_REFLECTIONS) {
-					replacement = MC_PREFIX;
+				if (MC_REMAPPED) {
+					try {
+						String forClass = ReflectionUtils.getMinecraftClass("PlayerConnection").getCanonicalName();
+						if (forClass != null) {
+							replacement = MC_PREFIX;
+						} else { replacement = NMS_PREFIX; }
+					} catch (Exception e) {
+						replacement = NMS_PREFIX;
+					}
+				} else { 
+					replacement = NMS_PREFIX;
 				}
 				replacement = NMS_PREFIX;
 			}
@@ -449,6 +472,68 @@ public final class ReflectionUtils {
 		}
 		matcher.appendTail(output);
 		return output.toString();
+	}
+	
+	
+   /**
+	* Searchable methods that no longer require NBT Reflections.
+	* 
+	*/
+	public enum MinecraftMethod {
+		add("add", "c"),
+		set("set", "a"),
+		setInt("setInt", "a"),
+		getPage("a", "a"),
+		getTag("getTag", "s"),
+		setTag("setTag", "c"),
+		setString("setString", "a"),
+		getString("getString", "l"),
+		setDouble("setDouble", "a"),
+		sendPacket("sendPacket", "a");
+		public String original;
+		public String remapped;
+		private MinecraftMethod(final String original, final String remapped) {
+			this.original = original;
+			this.remapped = remapped;
+		}
+		
+		public String getMethod(final Object objClass, Class<?>...arguments) {
+			try {
+				Class<?> canonicalClass = (!(objClass instanceof Class<?>) ? objClass.getClass() : (Class<?>)objClass);
+				Method forMethod = (arguments == null ? canonicalClass.getMethod((ReflectionUtils.remapped() ? this.remapped : this.original)) : canonicalClass.getMethod((ReflectionUtils.remapped() ? this.remapped : this.original), arguments));
+				if (forMethod != null) {
+					return (ReflectionUtils.remapped() ? this.remapped : this.original);	
+				} else { return this.original; }
+			} catch (Exception e) {
+				return this.original;
+			}
+		}
+	}
+	
+   /**
+	* Searchable tags that no longer require NBT Reflections.
+	* 
+	*/
+	public enum MinecraftField {
+		PlayerConnection("playerConnection", "b"),
+		NetworkManager("networkManager", "a");
+		public String original;
+		public String remapped;
+		private MinecraftField(final String original, final String remapped) {
+			this.original = original;
+			this.remapped = remapped;
+		}
+		
+		public String getField(final Class<? extends Object> canonicalClass) {
+			try {
+				Field forField = canonicalClass.getField((ReflectionUtils.remapped() ? this.remapped : this.original));
+				if (forField != null) {
+					return (ReflectionUtils.remapped() ? this.remapped : this.original);	
+				} else { return this.original; }
+			} catch (Exception e) {
+				return this.original;
+			}
+		}
 	}
 	
    /**
@@ -494,7 +579,12 @@ public final class ReflectionUtils {
 		return null;
 	}
 	
-	public static boolean noReflections() {
-		return NO_REFLECTIONS;
+   /**
+	* Checks if the Server is running a remapped version of NBT.
+	* 
+	* @return If the Server is remapped.
+	*/
+	public static boolean remapped() {
+		return MC_REMAPPED;
 	}
 }
