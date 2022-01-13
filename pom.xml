@@ -9,7 +9,7 @@
 	<groupId>me.RockinChaos.signutils</groupId>
 	<artifactId>SignUtils</artifactId>
 	<name>SignUtils</name>
-	<version>1.0.2-RELEASE</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<description>Create custom utility signs.</description>
 	<url>https://www.spigotmc.org/resources/signutils.66019/</url>
 	
@@ -119,7 +119,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.17-R0.1-SNAPSHOT</version>
+			<version>1.18.1-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--PlaceholderAPI API-->
