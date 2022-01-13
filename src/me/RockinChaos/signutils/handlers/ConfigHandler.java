@@ -76,7 +76,7 @@ public class ConfigHandler {
 		if (!silent) { 
 			DependAPI.getDepends(false).sendUtilityDepends();
 		}
-		SchedulerUtils.runLater(100L, () -> {
+		SchedulerUtils.runAsyncLater(100L, () -> {
 			new MetricsAPI(SignUtils.getInstance(), 4278);
 			ServerUtils.sendErrorStatements(null);
 		});

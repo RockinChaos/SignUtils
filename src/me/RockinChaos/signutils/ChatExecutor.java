@@ -60,7 +60,7 @@ public class ChatExecutor implements CommandExecutor {
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]------------------&d&l[&5 SignUtils &d&l]&d&l&m-----------------[");
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Permissions &7- &dLists the permissions you have.", "&aLists the Permissions for your Player. \n\n&aGreen &bmeans you have permission whereas \n&cRed &bmeans you do not have permission.", "/signutils permissions", ClickAction.SUGGEST_COMMAND);
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank &7- &dYour involved player group(s).", "&aLists the Group(s) your Player is involved in.", "/signutils rank", ClickAction.SUGGEST_COMMAND);
-			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank <Player> &7- &dTheir involved player group(s).", "&aLists the Group(s) the specified Player is involved in.", "/signutils rank ", ClickAction.SUGGEST_COMMAND);
+			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l/SignUtils Rank <User> &7- &dTheir involved player group(s).", "&aLists the Group(s) the specified Player is involved in.", "/signutils rank ", ClickAction.SUGGEST_COMMAND);
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&dFound a bug? Report it @");
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&dhttps://github.com/RockinChaos/SignUtils/issues", "&eClick to Submit a Bug or Feature Request.", "https://github.com/RockinChaos/SignUtils/issues", ClickAction.OPEN_URL);
 			LanguageAPI.getLang(false).dispatchMessage(sender, "&d&l&m]----------------&d&l[&5 Help Menu 2/2 &d&l]&d&l&m---------------[");
